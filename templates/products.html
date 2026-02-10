@@ -249,6 +249,9 @@
             <a href="/scan" class="btn btn-primary" style="text-decoration: none; display: inline-block; background-color: #17a2b8; margin-right: 10px;">
                 📷 Scan Barcode
             </a>
+            <a href="/returns" class="btn btn-primary" style="text-decoration: none; display: inline-block; background-color: #dc3545; margin-right: 10px;">
+                🔄 Process Returns
+            </a>
         </div>
         
         <!-- Category Management & Search Section -->
@@ -395,6 +398,7 @@
                             <button class="btn btn-warning btn-sm" onclick="editProduct({{ product.ID }})">Edit</button>
                             <button class="btn btn-success btn-sm" onclick="openBuyModal({{ product.ID }})">Buy</button>
                             <button class="btn btn-primary btn-sm" onclick="openSellModal({{ product.ID }})">Sell</button>
+                            <button class="btn btn-danger btn-sm" onclick="openReturnModal({{ product.ID }})">Return</button>
                             <form action="/products/delete/{{ product.ID }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
@@ -512,6 +516,27 @@
             </form>
         </div>
     </div>
+
+    <!-- Return Product Modal -->
+    <div id="returnModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeReturnModal()">&times;</span>
+                <h2>Return Stock</h2>
+            </div>
+            <form id="returnForm" method="POST">
+                <div class="form-group">
+                    <label for="returnQuantity">Quantity to Return *</label>
+                    <input type="number" id="returnQuantity" name="return_quantity" min="1" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Confirm Return</button>
+                    <button type="button" class="btn btn-danger" onclick="closeReturnModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <script>
         function editProduct(id) {
@@ -560,12 +585,23 @@
         function closeSellModal() {
             document.getElementById('sellModal').style.display = 'none';
         }
+
+        function openReturnModal(id) {
+            document.getElementById('returnQuantity').value = '';
+            document.getElementById('returnForm').action = '/products/return/' + id;
+            document.getElementById('returnModal').style.display = 'block';
+        }
+
+        function closeReturnModal() {
+            document.getElementById('returnModal').style.display = 'none';
+        }
         
         // Close modal when clicking outside
         window.onclick = function(event) {
             const editModal = document.getElementById('editModal');
             const buyModal = document.getElementById('buyModal');
             const sellModal = document.getElementById('sellModal');
+            const returnModal = document.getElementById('returnModal');
             
             if (event.target == editModal) {
                 closeEditModal();
@@ -575,6 +611,9 @@
             }
             if (event.target == sellModal) {
                 closeSellModal();
+            }
+            if (event.target == returnModal) {
+                closeReturnModal();
             }
         }
     </script>

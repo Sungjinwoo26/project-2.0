@@ -251,6 +251,35 @@ def sell_product(id):
     
     return redirect(url_for('view_products'))
 
+@app.route('/products/return/<int:id>', methods=['POST'])
+def return_product(id):
+    """Return stock - increase quantity and log as RETURN"""
+    quantity = int(request.form.get('return_quantity', 0))
+    
+    if quantity <= 0:
+        return redirect(url_for('view_products'))
+    
+    conn = get_db_connection()
+    
+    try:
+        # Update product quantity
+        conn.execute(
+            'UPDATE `PRODUCT TABLE (Core Table)` SET quantity = quantity + ? WHERE ID = ?',
+            (quantity, id)
+        )
+        
+        # Log stock movement as RETURN
+        conn.execute(
+            'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity) VALUES (?, ?, ?)',
+            (id, 'RETURN', quantity)
+        )
+        
+        conn.commit()
+    finally:
+        conn.close()
+    
+    return redirect(url_for('view_products'))
+
 @app.route('/products/get/<int:id>')
 def get_product(id):
     """Get single product (for AJAX edit form)"""
@@ -270,6 +299,27 @@ def get_product(id):
 def scan_product():
     """Barcode scanning page with camera interface"""
     return render_template('scan.html')
+
+@app.route('/returns')
+def returns_page():
+    """Returns management page"""
+    conn = get_db_connection()
+    
+    # Get recent returns with product info
+    returns = conn.execute('''
+        SELECT sm.id, sm.product_id, sm.type, sm.quantity, sm.timestamp,
+               p.sku, p.Name, c.name as category_name
+        FROM `STOCK MOVEMENT` sm
+        JOIN `PRODUCT TABLE (Core Table)` p ON sm.product_id = p.ID
+        LEFT JOIN `CATEGORY TABLE` c ON p.category_id = c.id
+        WHERE sm.type = 'RETURN'
+        ORDER BY sm.timestamp DESC
+        LIMIT 50
+    ''').fetchall()
+    
+    conn.close()
+    
+    return render_template('returns.html', returns=returns)
 
 @app.route('/api/search_by_sku/<sku>')
 def search_by_sku(sku):
