@@ -393,6 +393,8 @@
                         <td>{{ product.reorder_level }}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editProduct({{ product.ID }})">Edit</button>
+                            <button class="btn btn-success btn-sm" onclick="openBuyModal({{ product.ID }})">Buy</button>
+                            <button class="btn btn-primary btn-sm" onclick="openSellModal({{ product.ID }})">Sell</button>
                             <form action="/products/delete/{{ product.ID }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
@@ -469,6 +471,48 @@
         </div>
     </div>
     
+    <!-- Buy Product Modal -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeBuyModal()">&times;</span>
+                <h2>Buy Stock</h2>
+            </div>
+            <form id="buyForm" method="POST">
+                <div class="form-group">
+                    <label for="buyQuantity">Quantity to Buy *</label>
+                    <input type="number" id="buyQuantity" name="buy_quantity" min="1" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Confirm Buy</button>
+                    <button type="button" class="btn btn-danger" onclick="closeBuyModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Sell Product Modal -->
+    <div id="sellModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeSellModal()">&times;</span>
+                <h2>Sell Stock</h2>
+            </div>
+            <form id="sellForm" method="POST">
+                <div class="form-group">
+                    <label for="sellQuantity">Quantity to Sell *</label>
+                    <input type="number" id="sellQuantity" name="sell_quantity" min="1" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Confirm Sell</button>
+                    <button type="button" class="btn btn-danger" onclick="closeSellModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script>
         function editProduct(id) {
             // Fetch product data
@@ -497,11 +541,40 @@
             document.getElementById('editModal').style.display = 'none';
         }
         
+        function openBuyModal(id) {
+            document.getElementById('buyQuantity').value = '';
+            document.getElementById('buyForm').action = '/products/buy/' + id;
+            document.getElementById('buyModal').style.display = 'block';
+        }
+        
+        function closeBuyModal() {
+            document.getElementById('buyModal').style.display = 'none';
+        }
+        
+        function openSellModal(id) {
+            document.getElementById('sellQuantity').value = '';
+            document.getElementById('sellForm').action = '/products/sell/' + id;
+            document.getElementById('sellModal').style.display = 'block';
+        }
+        
+        function closeSellModal() {
+            document.getElementById('sellModal').style.display = 'none';
+        }
+        
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target == modal) {
+            const editModal = document.getElementById('editModal');
+            const buyModal = document.getElementById('buyModal');
+            const sellModal = document.getElementById('sellModal');
+            
+            if (event.target == editModal) {
                 closeEditModal();
+            }
+            if (event.target == buyModal) {
+                closeBuyModal();
+            }
+            if (event.target == sellModal) {
+                closeSellModal();
             }
         }
     </script>

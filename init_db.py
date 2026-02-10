@@ -34,10 +34,23 @@ def init_db():
         )
     ''')
     
+    # Create STOCK MOVEMENT TABLE (Audit Trail)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS `STOCK MOVEMENT` (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            type TEXT NOT NULL,
+            quantity INTEGER NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (product_id) REFERENCES `PRODUCT TABLE (Core Table)`(ID)
+        )
+    ''')
+    
     conn.commit()
     print("✓ Database initialized successfully!")
     print("✓ CATEGORY TABLE created")
     print("✓ PRODUCT TABLE (Core Table) created")
+    print("✓ STOCK MOVEMENT TABLE created")
     
     # Add barcode_path column if it doesn't exist (migration)
     try:

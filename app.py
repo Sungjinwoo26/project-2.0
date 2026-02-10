@@ -177,6 +177,80 @@ def delete_product(id):
     
     return redirect(url_for('view_products'))
 
+@app.route('/products/buy/<int:id>', methods=['POST'])
+def buy_product(id):
+    """Buy stock - increase quantity"""
+    quantity = int(request.form.get('buy_quantity', 0))
+    
+    if quantity <= 0:
+        return redirect(url_for('view_products'))
+    
+    conn = get_db_connection()
+    
+    try:
+        # Update product quantity
+        conn.execute(
+            'UPDATE `PRODUCT TABLE (Core Table)` SET quantity = quantity + ? WHERE ID = ?',
+            (quantity, id)
+        )
+        
+        # Log stock movement
+        conn.execute(
+            'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity) VALUES (?, ?, ?)',
+            (id, 'BUY', quantity)
+        )
+        
+        conn.commit()
+    finally:
+        conn.close()
+    
+    return redirect(url_for('view_products'))
+
+@app.route('/products/sell/<int:id>', methods=['POST'])
+def sell_product(id):
+    """Sell stock - decrease quantity with validation"""
+    quantity = int(request.form.get('sell_quantity', 0))
+    
+    if quantity <= 0:
+        return redirect(url_for('view_products'))
+    
+    conn = get_db_connection()
+    
+    try:
+        # Get current quantity
+        product = conn.execute(
+            'SELECT quantity FROM `PRODUCT TABLE (Core Table)` WHERE ID = ?', (id,)
+        ).fetchone()
+        
+        if not product:
+            conn.close()
+            return redirect(url_for('view_products'))
+        
+        current_qty = product['quantity']
+        
+        # Validate: prevent negative inventory
+        if current_qty < quantity:
+            conn.close()
+            return redirect(url_for('view_products'))
+        
+        # Update product quantity
+        conn.execute(
+            'UPDATE `PRODUCT TABLE (Core Table)` SET quantity = quantity - ? WHERE ID = ?',
+            (quantity, id)
+        )
+        
+        # Log stock movement
+        conn.execute(
+            'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity) VALUES (?, ?, ?)',
+            (id, 'SELL', quantity)
+        )
+        
+        conn.commit()
+    finally:
+        conn.close()
+    
+    return redirect(url_for('view_products'))
+
 @app.route('/products/get/<int:id>')
 def get_product(id):
     """Get single product (for AJAX edit form)"""
