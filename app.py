@@ -190,5 +190,28 @@ def get_product(id):
         return jsonify(dict(product))
     return jsonify({'error': 'Product not found'}), 404
 
+# ==================== BARCODE SCANNING ROUTES ====================
+
+@app.route('/scan')
+def scan_product():
+    """Barcode scanning page with camera interface"""
+    return render_template('scan.html')
+
+@app.route('/api/search_by_sku/<sku>')
+def search_by_sku(sku):
+    """Search product by SKU (barcode)"""
+    conn = get_db_connection()
+    product = conn.execute('''
+        SELECT p.*, c.name as category_name 
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `CATEGORY TABLE` c ON p.category_id = c.id
+        WHERE p.sku = ?
+    ''', (sku,)).fetchone()
+    conn.close()
+    
+    if product:
+        return jsonify(dict(product))
+    return jsonify({'error': f'Product with SKU {sku} not found'}), 404
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
