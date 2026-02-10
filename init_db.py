@@ -28,6 +28,7 @@ def init_db():
             quantity INTEGER NOT NULL,
             shelf_number TEXT NOT NULL,
             reorder_level INTEGER NOT NULL,
+            barcode_path TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (category_id) REFERENCES `CATEGORY TABLE`(id)
         )
@@ -37,6 +38,17 @@ def init_db():
     print("✓ Database initialized successfully!")
     print("✓ CATEGORY TABLE created")
     print("✓ PRODUCT TABLE (Core Table) created")
+    
+    # Add barcode_path column if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `PRODUCT TABLE (Core Table)` ADD COLUMN barcode_path TEXT")
+        conn.commit()
+        print("✓ Added barcode_path column to PRODUCT TABLE")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ barcode_path column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
     
     # Insert sample categories
     cursor.execute("SELECT COUNT(*) FROM `CATEGORY TABLE`")

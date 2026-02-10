@@ -352,6 +352,7 @@
                         <th>ID</th>
                         <th>SKU</th>
                         <th>Name</th>
+                        <th>Barcode</th>
                         <th>Category</th>
                         <th>Price</th>
                         <th>Quantity</th>
@@ -366,6 +367,15 @@
                         <td>{{ product.ID }}</td>
                         <td>{{ product.sku }}</td>
                         <td>{{ product.Name }}</td>
+                        <td>
+                            {% if product.barcode_path %}
+                                <a href="{{ product.barcode_path }}" target="_blank" title="View Barcode">
+                                    <img src="{{ product.barcode_path }}" alt="Barcode for {{ product.sku }}" style="height: 50px;">
+                                </a>
+                            {% else %}
+                                <span style="color: #ccc;">No barcode</span>
+                            {% endif %}
+                        </td>
                         <td>{{ product.category_name or '-' }}</td>
                         <td>${{ "%.2f"|format(product.price) }}</td>
                         <td class="{% if product.quantity <= product.reorder_level %}low-stock{% endif %}">

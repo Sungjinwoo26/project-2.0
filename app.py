@@ -1,15 +1,36 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
 from datetime import datetime
+import os
+from barcode import Code128
+from barcode.writer import SVGWriter
 
 app = Flask(__name__)
 DATABASE = 'Inventery_management_2_0.db'
+BARCODE_DIR = 'static/barcodes'
+
+# Ensure barcode directory exists
+os.makedirs(BARCODE_DIR, exist_ok=True)
 
 def get_db_connection():
     """Create database connection"""
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+def generate_barcode(sku):
+    """Generate barcode for product SKU"""
+    try:
+        # Create barcode using Code128 format (SVG format - no font issues)
+        barcode_path = os.path.join(BARCODE_DIR, sku)
+        code = Code128(sku, writer=SVGWriter())
+        code.save(barcode_path)
+        
+        # Return relative path for storage
+        return f'{BARCODE_DIR}/{sku}.svg'
+    except Exception as e:
+        print(f"Error generating barcode for SKU {sku}: {e}")
+        return None
 
 # ==================== PRODUCT ROUTES ====================
 
@@ -109,12 +130,15 @@ def add_product():
     reorder_level = int(request.form['reorder_level'])
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    # Generate barcode
+    barcode_path = generate_barcode(sku)
+    
     conn = get_db_connection()
     conn.execute('''
         INSERT INTO `PRODUCT TABLE (Core Table)` 
-        (sku, Name, category_id, price, quantity, shelf_number, reorder_level, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, created_at))
+        (sku, Name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at))
     conn.commit()
     conn.close()
     
