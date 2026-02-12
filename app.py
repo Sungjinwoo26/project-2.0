@@ -128,12 +128,25 @@ def add_product():
     quantity = int(request.form['quantity'])
     shelf_number = request.form['shelf_number']
     reorder_level = int(request.form['reorder_level'])
+    custom_barcode = request.form.get('barcode_number', '').strip()
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
-    # Generate barcode
-    barcode_path = generate_barcode(sku)
-    
     conn = get_db_connection()
+    
+    # Check for duplicate barcode if custom barcode provided
+    if custom_barcode:
+        existing = conn.execute(
+            'SELECT ID FROM `PRODUCT TABLE (Core Table)` WHERE barcode_path = ?',
+            (custom_barcode,)
+        ).fetchone()
+        if existing:
+            conn.close()
+            return redirect(url_for('view_products'))  # Silently ignore duplicate
+        barcode_path = custom_barcode
+    else:
+        # Generate barcode from SKU
+        barcode_path = generate_barcode(sku)
+    
     conn.execute('''
         INSERT INTO `PRODUCT TABLE (Core Table)` 
         (sku, Name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at)

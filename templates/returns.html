@@ -238,14 +238,39 @@
         <div class="scanner-section">
             <h2>Process Return</h2>
             
-            <div class="controls">
-                <button id="startBtn" class="btn btn-success">Start Camera</button>
-                <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Camera</button>
+            <!-- Mode Selection -->
+            <div class="controls" style="margin-bottom: 20px;">
+                <label style="font-size: 16px; font-weight: bold; margin-right: 20px;">
+                    <input type="radio" name="return_scan_mode" value="camera" checked onchange="toggleReturnMode('camera')"> Scan with Camera
+                </label>
+                <label style="font-size: 16px; font-weight: bold;">
+                    <input type="radio" name="return_scan_mode" value="manual" onchange="toggleReturnMode('manual')"> Enter Barcode Manually
+                </label>
             </div>
             
-            <div id="status" class="status"></div>
+            <!-- Camera Mode -->
+            <div id="cameraModeReturn" class="scanner-section">
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-success">Start Camera</button>
+                    <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Camera</button>
+                </div>
+                
+                <div id="status" class="status"></div>
+                
+                <video id="camera"></video>
+            </div>
             
-            <video id="camera"></video>
+            <!-- Manual Entry Mode -->
+            <div id="manualModeReturn" style="display: none; padding: 20px; background-color: #f8f9fa; border-radius: 4px; margin-bottom: 20px;">
+                <form id="manualBarcodeFormReturn" onsubmit="searchProductManuallyReturn(event)">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="manualBarcodeReturn" style="font-weight: bold; display: block; margin-bottom: 5px;">Enter Barcode Number *</label>
+                        <input type="text" id="manualBarcodeReturn" name="barcode" placeholder="Scan or type barcode..." required style="padding: 10px; width: 100%; max-width: 400px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search Product</button>
+                </form>
+                <div id="statusManualReturn" class="status"></div>
+            </div>
         </div>
         
         <!-- Product Info and Return Form -->
@@ -409,6 +434,50 @@
             returnForm.action = `/products/return/${product.ID}`;
             
             productInfoDiv.classList.add('show');
+        }
+
+        function toggleReturnMode(mode) {
+            const cameraMode = document.getElementById('cameraModeReturn');
+            const manualMode = document.getElementById('manualModeReturn');
+            
+            if (mode === 'camera') {
+                cameraMode.style.display = 'block';
+                manualMode.style.display = 'none';
+            } else {
+                cameraMode.style.display = 'none';
+                manualMode.style.display = 'block';
+                document.getElementById('manualBarcodeReturn').focus();
+            }
+        }
+
+        function searchProductManuallyReturn(event) {
+            event.preventDefault();
+            const barcode = document.getElementById('manualBarcodeReturn').value.trim();
+            const statusManual = document.getElementById('statusManualReturn');
+            
+            if (!barcode) {
+                statusManual.textContent = '✗ Error: Please enter a barcode.';
+                statusManual.className = 'status error';
+                return;
+            }
+            
+            fetch(`/api/search_by_sku/${encodeURIComponent(barcode)}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Product not found');
+                    }
+                })
+                .then(product => {
+                    displayProduct(product);
+                    statusManual.textContent = `✓ Product found: ${product.Name}`;
+                    statusManual.className = 'status success';
+                })
+                .catch(error => {
+                    statusManual.textContent = `✗ Error: ${error.message}`;
+                    statusManual.className = 'status error';
+                });
         }
         
         returnForm.addEventListener('submit', function(e) {

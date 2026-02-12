@@ -177,15 +177,40 @@
         <h1>📷 Barcode Scanner</h1>
         
         <div class="scanner-section">
-            <div class="controls">
-                <button id="startBtn" class="btn btn-success">Start Camera</button>
-                <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Camera</button>
+            <!-- Mode Selection -->
+            <div class="controls" style="margin-bottom: 20px;">
+                <label style="font-size: 16px; font-weight: bold; margin-right: 20px;">
+                    <input type="radio" name="scan_mode" value="camera" checked onchange="toggleScanMode('camera')"> Scan with Camera
+                </label>
+                <label style="font-size: 16px; font-weight: bold;">
+                    <input type="radio" name="scan_mode" value="manual" onchange="toggleScanMode('manual')"> Enter Barcode Manually
+                </label>
             </div>
             
-            <div id="status" class="status"></div>
+            <!-- Camera Mode -->
+            <div id="cameraMode" class="scanner-section">
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-success">Start Camera</button>
+                    <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Camera</button>
+                </div>
+                
+                <div id="status" class="status"></div>
+                
+                <video id="camera" style="display: none;"></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+            </div>
             
-            <video id="camera" style="display: none;"></video>
-            <canvas id="canvas" style="display: none;"></canvas>
+            <!-- Manual Entry Mode -->
+            <div id="manualMode" style="display: none; padding: 20px; background-color: #f8f9fa; border-radius: 4px; margin-bottom: 20px;">
+                <form id="manualBarcodeForm" onsubmit="searchProductManually(event)">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="manualBarcode" style="font-weight: bold; display: block; margin-bottom: 5px;">Enter Barcode Number *</label>
+                        <input type="text" id="manualBarcode" name="barcode" placeholder="Scan or type barcode..." required style="padding: 10px; width: 100%; max-width: 400px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search Product</button>
+                </form>
+                <div id="statusManual" class="status"></div>
+            </div>
         </div>
         
         <!-- Product Info Display -->
@@ -314,12 +339,56 @@
             document.getElementById('productName').textContent = product.Name;
             document.getElementById('productSku').textContent = product.sku;
             document.getElementById('productCategory').textContent = product.category_name || 'N/A';
-            document.getElementById('productPrice').textContent = `$${product.price.toFixed(2)}`;
+            document.getElementById('productPrice').textContent = `₹${product.price.toFixed(2)}`;
             document.getElementById('productQuantity').textContent = product.quantity;
             document.getElementById('productShelf').textContent = product.shelf_number;
             document.getElementById('productReorder').textContent = product.reorder_level;
             
             productInfoDiv.classList.add('show');
+        }
+
+        function toggleScanMode(mode) {
+            const cameraMode = document.getElementById('cameraMode');
+            const manualMode = document.getElementById('manualMode');
+            
+            if (mode === 'camera') {
+                cameraMode.style.display = 'block';
+                manualMode.style.display = 'none';
+            } else {
+                cameraMode.style.display = 'none';
+                manualMode.style.display = 'block';
+                document.getElementById('manualBarcode').focus();
+            }
+        }
+
+        function searchProductManually(event) {
+            event.preventDefault();
+            const barcode = document.getElementById('manualBarcode').value.trim();
+            const statusManual = document.getElementById('statusManual');
+            
+            if (!barcode) {
+                statusManual.textContent = '✗ Error: Please enter a barcode.';
+                statusManual.className = 'status error';
+                return;
+            }
+            
+            fetch(`/api/search_by_sku/${encodeURIComponent(barcode)}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Product not found');
+                    }
+                })
+                .then(product => {
+                    displayProduct(product);
+                    statusManual.textContent = `✓ Product found: ${product.Name}`;
+                    statusManual.className = 'status success';
+                })
+                .catch(error => {
+                    statusManual.textContent = `✗ Error: ${error.message}`;
+                    statusManual.className = 'status error';
+                });
         }
     </script>
 </body>
