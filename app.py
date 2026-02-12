@@ -321,6 +321,25 @@ def returns_page():
     
     return render_template('returns.html', returns=returns)
 
+@app.route('/stock-history')
+def stock_history():
+    """Stock movement history - complete audit trail"""
+    conn = get_db_connection()
+    
+    # Get all stock movements with product info, ordered by timestamp DESC
+    movements = conn.execute('''
+        SELECT sm.id, sm.product_id, sm.type, sm.quantity, sm.timestamp,
+               p.sku, p.Name, c.name as category_name
+        FROM `STOCK MOVEMENT` sm
+        JOIN `PRODUCT TABLE (Core Table)` p ON sm.product_id = p.ID
+        LEFT JOIN `CATEGORY TABLE` c ON p.category_id = c.id
+        ORDER BY sm.timestamp DESC
+    ''').fetchall()
+    
+    conn.close()
+    
+    return render_template('stock_history.html', movements=movements)
+
 @app.route('/api/search_by_sku/<sku>')
 def search_by_sku(sku):
     """Search product by SKU (barcode)"""
