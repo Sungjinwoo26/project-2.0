@@ -244,6 +244,23 @@
                 <label>Reorder Level:</label>
                 <span id="productReorder"></span>
             </div>
+
+            <!-- Buy/Sell Action Section -->
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 2px solid #dee2e6;">
+                <label style="font-weight: bold; display: block; margin-bottom: 15px; font-size: 16px;">Stock Action</label>
+                
+                <form id="actionForm" method="POST" style="display: inline; margin-right: 20px;">
+                    <input type="hidden" name="product_id" id="actionProductId" value="">
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="actionQuantity" style="font-weight: bold;">Quantity *</label>
+                        <input type="number" id="actionQuantity" name="quantity" min="1" value="1" required style="padding: 8px; width: 100px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    
+                    <button type="submit" name="action" value="sell" class="btn btn-primary" style="background-color: #ffc107; color: #333; margin-right: 10px; font-weight: bold;">💰 SELL PRODUCT</button>
+                    <button type="submit" name="action" value="buy" class="btn btn-success" style="background-color: #28a745; color: white; font-weight: bold;">📥 BUY PRODUCT</button>
+                </form>
+            </div>
         </div>
         
         <a href="/products" class="btn btn-secondary back-link">Back to Products</a>
@@ -343,6 +360,51 @@
             document.getElementById('productQuantity').textContent = product.quantity;
             document.getElementById('productShelf').textContent = product.shelf_number;
             document.getElementById('productReorder').textContent = product.reorder_level;
+            
+            // Set product ID for buy/sell action
+            document.getElementById('actionProductId').value = product.ID;
+            
+            // Set form submission handler for action buttons
+            const actionForm = document.getElementById('actionForm');
+            actionForm.onsubmit = function(e) {
+                const action = e.submitter.value;
+                const quantity = document.getElementById('actionQuantity').value;
+                
+                if (quantity <= 0) {
+                    e.preventDefault();
+                    alert('Please enter a valid quantity');
+                    return false;
+                }
+                
+                // Validate sell quantity against available stock
+                if (action === 'sell' && quantity > product.quantity) {
+                    e.preventDefault();
+                    alert(`Cannot sell ${quantity} items. Only ${product.quantity} available.`);
+                    return false;
+                }
+                
+                // Set appropriate form action and parameter name
+                const productId = product.ID;
+                if (action === 'sell') {
+                    actionForm.action = `/products/sell/${productId}`;
+                    // Change quantity parameter name to sell_quantity
+                    const qtyInput = document.getElementById('actionQuantity');
+                    const newQtyInput = qtyInput.cloneNode(true);
+                    newQtyInput.name = 'sell_quantity';
+                    qtyInput.parentNode.replaceChild(newQtyInput, qtyInput);
+                    document.getElementById('actionQuantity').value = quantity;
+                } else {
+                    actionForm.action = `/products/buy/${productId}`;
+                    // Change quantity parameter name to buy_quantity
+                    const qtyInput = document.getElementById('actionQuantity');
+                    const newQtyInput = qtyInput.cloneNode(true);
+                    newQtyInput.name = 'buy_quantity';
+                    qtyInput.parentNode.replaceChild(newQtyInput, qtyInput);
+                    document.getElementById('actionQuantity').value = quantity;
+                }
+                
+                return true;
+            };
             
             productInfoDiv.classList.add('show');
         }
