@@ -9,19 +9,19 @@
         <rect x="2.540mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
         <rect x="3.140mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
         <rect x="3.740mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
-        <rect x="4.740mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
-        <rect x="5.540mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
-        <rect x="5.940mm" y="1.000mm" width="0.600mm" height="15.000mm" style="fill:black;"/>
-        <rect x="6.940mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
+        <rect x="4.740mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
+        <rect x="5.340mm" y="1.000mm" width="0.600mm" height="15.000mm" style="fill:black;"/>
+        <rect x="6.340mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
+        <rect x="6.940mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
         <rect x="7.540mm" y="1.000mm" width="0.600mm" height="15.000mm" style="fill:black;"/>
-        <rect x="8.540mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
-        <rect x="9.140mm" y="1.000mm" width="0.800mm" height="15.000mm" style="fill:black;"/>
-        <rect x="10.540mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
-        <rect x="10.940mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
+        <rect x="8.340mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
+        <rect x="9.140mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
+        <rect x="10.140mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
+        <rect x="10.540mm" y="1.000mm" width="0.600mm" height="15.000mm" style="fill:black;"/>
         <rect x="11.340mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
         <rect x="12.340mm" y="1.000mm" width="0.600mm" height="15.000mm" style="fill:black;"/>
         <rect x="13.140mm" y="1.000mm" width="0.200mm" height="15.000mm" style="fill:black;"/>
         <rect x="13.540mm" y="1.000mm" width="0.400mm" height="15.000mm" style="fill:black;"/>
-        <text x="8.240mm" y="21.000mm" style="fill:black;font-size:10pt;text-anchor:middle;">35</text>
+        <text x="8.240mm" y="21.000mm" style="fill:black;font-size:10pt;text-anchor:middle;">10</text>
     </g>
 </svg>

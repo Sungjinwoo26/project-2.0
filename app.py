@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 import sqlite3
 from datetime import datetime
 import os
@@ -6,6 +6,7 @@ from barcode import Code128
 from barcode.writer import SVGWriter
 
 app = Flask(__name__)
+app.secret_key = 'inventory-management-secret-key-2024'
 DATABASE = 'Inventery_management_2_0.db'
 BARCODE_DIR = 'static/barcodes'
 
@@ -121,39 +122,66 @@ def view_products():
 @app.route('/products/add', methods=['POST'])
 def add_product():
     """Add new product"""
-    sku = request.form['sku']
-    name = request.form['name']
+    sku = request.form.get('sku', '').strip()
+    name = request.form.get('name', '').strip()
     category_id = request.form.get('category_id') or None
-    price = float(request.form['price'])
-    quantity = int(request.form['quantity'])
-    shelf_number = request.form['shelf_number']
-    reorder_level = int(request.form['reorder_level'])
+    price = float(request.form.get('price', 0))
+    quantity = int(request.form.get('quantity', 0))
+    shelf_number = request.form.get('shelf_number', '').strip()
+    reorder_level = int(request.form.get('reorder_level', 0))
     custom_barcode = request.form.get('barcode_number', '').strip()
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     conn = get_db_connection()
     
-    # Check for duplicate barcode if custom barcode provided
-    if custom_barcode:
-        existing = conn.execute(
-            'SELECT ID FROM `PRODUCT TABLE (Core Table)` WHERE barcode_path = ?',
-            (custom_barcode,)
+    try:
+        # Check if SKU already exists
+        existing_sku = conn.execute(
+            'SELECT ID FROM `PRODUCT TABLE (Core Table)` WHERE sku = ?',
+            (sku,)
         ).fetchone()
-        if existing:
+        
+        if existing_sku:
             conn.close()
-            return redirect(url_for('view_products'))  # Silently ignore duplicate
-        barcode_path = custom_barcode
-    else:
-        # Generate barcode from SKU
-        barcode_path = generate_barcode(sku)
-    
-    conn.execute('''
-        INSERT INTO `PRODUCT TABLE (Core Table)` 
-        (sku, Name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at))
-    conn.commit()
-    conn.close()
+            flash(f'Product with SKU "{sku}" already exists.', 'error')
+            return redirect(url_for('view_products'))
+        
+        # Check for duplicate barcode if custom barcode provided
+        if custom_barcode:
+            existing_barcode = conn.execute(
+                'SELECT ID FROM `PRODUCT TABLE (Core Table)` WHERE barcode_path = ?',
+                (custom_barcode,)
+            ).fetchone()
+            if existing_barcode:
+                conn.close()
+                flash('A product with this custom barcode already exists.', 'error')
+                return redirect(url_for('view_products'))
+            barcode_path = custom_barcode
+        else:
+            # Generate barcode from SKU
+            barcode_path = generate_barcode(sku)
+        
+        # Insert new product
+        conn.execute('''
+            INSERT INTO `PRODUCT TABLE (Core Table)` 
+            (sku, Name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at))
+        
+        conn.commit()
+        flash(f'Product "{name}" (SKU: {sku}) added successfully.', 'success')
+        
+    except sqlite3.IntegrityError as e:
+        conn.rollback()
+        flash(f'Database error: Unable to add product. {str(e)}', 'error')
+    except ValueError as e:
+        conn.rollback()
+        flash(f'Invalid input: Please check your form values. {str(e)}', 'error')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Unexpected error: {str(e)}', 'error')
+    finally:
+        conn.close()
     
     return redirect(url_for('view_products'))
 
