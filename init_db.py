@@ -63,6 +63,110 @@ def init_db():
         else:
             print(f"⚠ Migration error: {e}")
     
+    # Add buy_price column if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `PRODUCT TABLE (Core Table)` ADD COLUMN buy_price REAL NOT NULL DEFAULT 0")
+        conn.commit()
+        print("✓ Added buy_price column to PRODUCT TABLE")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ buy_price column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
+    
+    # Add sell_price column if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `PRODUCT TABLE (Core Table)` ADD COLUMN sell_price REAL NOT NULL DEFAULT 0")
+        conn.commit()
+        print("✓ Added sell_price column to PRODUCT TABLE")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ sell_price column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
+    
+    # Add discount column to STOCK MOVEMENT if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `STOCK MOVEMENT` ADD COLUMN discount REAL DEFAULT 0")
+        conn.commit()
+        print("✓ Added discount column to STOCK MOVEMENT")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ discount column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
+    
+    # Add final_price column to STOCK MOVEMENT if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `STOCK MOVEMENT` ADD COLUMN final_price REAL")
+        conn.commit()
+        print("✓ Added final_price column to STOCK MOVEMENT")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ final_price column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
+    
+    # Add profit column to STOCK MOVEMENT if it doesn't exist (migration)
+    try:
+        cursor.execute("ALTER TABLE `STOCK MOVEMENT` ADD COLUMN profit REAL")
+        conn.commit()
+        print("✓ Added profit column to STOCK MOVEMENT")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("✓ profit column already exists")
+        else:
+            print(f"⚠ Migration error: {e}")
+    
+    # Create TRANSACTIONS TABLE (POS Billing)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS `TRANSACTIONS` (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            subtotal REAL NOT NULL,
+            total_discount REAL DEFAULT 0,
+            total_tax REAL DEFAULT 0,
+            total_profit REAL DEFAULT 0,
+            round_off REAL DEFAULT 0,
+            final_amount REAL NOT NULL,
+            payment_method TEXT,
+            amount_received REAL,
+            change_return REAL,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Create TRANSACTION_ITEMS TABLE (Line Items)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS `TRANSACTION_ITEMS` (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            transaction_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            product_name TEXT NOT NULL,
+            quantity REAL NOT NULL,
+            unit_type TEXT DEFAULT 'pcs',
+            unit_price REAL NOT NULL,
+            buy_price REAL NOT NULL,
+            discount_type TEXT DEFAULT 'flat',
+            discount_value REAL DEFAULT 0,
+            final_unit_price REAL NOT NULL,
+            line_total REAL NOT NULL,
+            gst_percentage REAL DEFAULT 0,
+            cgst REAL DEFAULT 0,
+            sgst REAL DEFAULT 0,
+            profit_per_unit REAL NOT NULL,
+            total_profit REAL NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (transaction_id) REFERENCES `TRANSACTIONS`(id),
+            FOREIGN KEY (product_id) REFERENCES `PRODUCT TABLE (Core Table)`(ID)
+        )
+    ''')
+    
+    conn.commit()
+    print("✓ TRANSACTIONS TABLE created")
+    print("✓ TRANSACTION_ITEMS TABLE created")
+    
     # Insert sample categories
     cursor.execute("SELECT COUNT(*) FROM `CATEGORY TABLE`")
     if cursor.fetchone()[0] == 0:

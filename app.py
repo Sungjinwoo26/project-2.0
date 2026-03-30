@@ -125,7 +125,8 @@ def add_product():
     sku = request.form.get('sku', '').strip()
     name = request.form.get('name', '').strip()
     category_id = request.form.get('category_id') or None
-    price = float(request.form.get('price', 0))
+    buy_price = float(request.form.get('buy_price', 0))
+    sell_price = float(request.form.get('sell_price', 0))
     quantity = int(request.form.get('quantity', 0))
     shelf_number = request.form.get('shelf_number', '').strip()
     reorder_level = int(request.form.get('reorder_level', 0))
@@ -164,9 +165,9 @@ def add_product():
         # Insert new product
         conn.execute('''
             INSERT INTO `PRODUCT TABLE (Core Table)` 
-            (sku, Name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, barcode_path, created_at))
+            (sku, Name, category_id, buy_price, sell_price, quantity, shelf_number, reorder_level, barcode_path, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (sku, name, category_id, buy_price, sell_price, quantity, shelf_number, reorder_level, barcode_path, created_at))
         
         conn.commit()
         flash(f'Product "{name}" (SKU: {sku}) added successfully.', 'success')
@@ -191,7 +192,8 @@ def edit_product(id):
     sku = request.form['sku']
     name = request.form['name']
     category_id = request.form.get('category_id') or None
-    price = float(request.form['price'])
+    buy_price = float(request.form['buy_price'])
+    sell_price = float(request.form['sell_price'])
     quantity = int(request.form['quantity'])
     shelf_number = request.form['shelf_number']
     reorder_level = int(request.form['reorder_level'])
@@ -199,10 +201,10 @@ def edit_product(id):
     conn = get_db_connection()
     conn.execute('''
         UPDATE `PRODUCT TABLE (Core Table)`
-        SET sku = ?, Name = ?, category_id = ?, price = ?, quantity = ?, 
+        SET sku = ?, Name = ?, category_id = ?, buy_price = ?, sell_price = ?, quantity = ?, 
             shelf_number = ?, reorder_level = ?
         WHERE ID = ?
-    ''', (sku, name, category_id, price, quantity, shelf_number, reorder_level, id))
+    ''', (sku, name, category_id, buy_price, sell_price, quantity, shelf_number, reorder_level, id))
     conn.commit()
     conn.close()
     
@@ -251,16 +253,20 @@ def buy_product(id):
 def sell_product(id):
     """Sell stock - decrease quantity with validation"""
     quantity = int(request.form.get('sell_quantity', 0))
+    discount = float(request.form.get('discount', 0))
     
     if quantity <= 0:
+        return redirect(url_for('view_products'))
+    
+    if discount < 0:
         return redirect(url_for('view_products'))
     
     conn = get_db_connection()
     
     try:
-        # Get current quantity
+        # Get current quantity and pricing info
         product = conn.execute(
-            'SELECT quantity FROM `PRODUCT TABLE (Core Table)` WHERE ID = ?', (id,)
+            'SELECT quantity, sell_price, buy_price FROM `PRODUCT TABLE (Core Table)` WHERE ID = ?', (id,)
         ).fetchone()
         
         if not product:
@@ -268,11 +274,23 @@ def sell_product(id):
             return redirect(url_for('view_products'))
         
         current_qty = product['quantity']
+        sell_price = product['sell_price']
+        buy_price = product['buy_price']
         
         # Validate: prevent negative inventory
         if current_qty < quantity:
             conn.close()
             return redirect(url_for('view_products'))
+        
+        # Validate: discount cannot exceed selling price
+        if discount > sell_price:
+            conn.close()
+            return redirect(url_for('view_products'))
+        
+        # Calculate final price and profit
+        final_price = sell_price - discount
+        profit_per_unit = final_price - buy_price
+        total_profit = profit_per_unit * quantity
         
         # Update product quantity
         conn.execute(
@@ -280,10 +298,10 @@ def sell_product(id):
             (quantity, id)
         )
         
-        # Log stock movement
+        # Log stock movement with discount, final_price, and profit
         conn.execute(
-            'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity) VALUES (?, ?, ?)',
-            (id, 'SELL', quantity)
+            'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity, discount, final_price, profit) VALUES (?, ?, ?, ?, ?, ?)',
+            (id, 'SELL', quantity, discount, final_price, total_profit)
         )
         
         conn.commit()
@@ -396,6 +414,298 @@ def search_by_sku(sku):
     if product:
         return jsonify(dict(product))
     return jsonify({'error': f'Product with SKU {sku} not found'}), 404
+
+# ==================== ANALYTICS ROUTES ====================
+
+@app.route('/analytics')
+def analytics():
+    """Analytics dashboard with revenue, profit, and inventory insights"""
+    conn = get_db_connection()
+    time_filter = request.args.get('time_filter', '30')  # Default: 30 days
+    
+    # Calculate time boundaries
+    from datetime import datetime, timedelta
+    if time_filter == '7':
+        days_back = 7
+    elif time_filter == '30':
+        days_back = 30
+    elif time_filter == '180':
+        days_back = 180
+    elif time_filter == '365':
+        days_back = 365
+    else:
+        days_back = 30
+    
+    cutoff_date = (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%d')
+    
+    # 1. TOTAL REVENUE
+    revenue_result = conn.execute('''
+        SELECT COALESCE(SUM(final_price * quantity), 0) as total_revenue
+        FROM `STOCK MOVEMENT`
+        WHERE type = 'SELL' AND timestamp >= ?
+    ''', (cutoff_date,)).fetchone()
+    total_revenue = revenue_result['total_revenue'] or 0
+    
+    # 2. TOTAL PROFIT
+    profit_result = conn.execute('''
+        SELECT COALESCE(SUM(profit), 0) as total_profit
+        FROM `STOCK MOVEMENT`
+        WHERE type = 'SELL' AND timestamp >= ?
+    ''', (cutoff_date,)).fetchone()
+    total_profit = profit_result['total_profit'] or 0
+    
+    # 3. TOTAL ITEMS SOLD
+    items_sold_result = conn.execute('''
+        SELECT COALESCE(SUM(quantity), 0) as total_items
+        FROM `STOCK MOVEMENT`
+        WHERE type = 'SELL' AND timestamp >= ?
+    ''', (cutoff_date,)).fetchone()
+    total_items_sold = items_sold_result['total_items'] or 0
+    
+    # 4. TOP SELLING PRODUCTS
+    top_selling = conn.execute('''
+        SELECT p.ID, p.sku, p.Name, COALESCE(SUM(sm.quantity), 0) as total_qty_sold
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `STOCK MOVEMENT` sm ON p.ID = sm.product_id AND sm.type = 'SELL' AND sm.timestamp >= ?
+        GROUP BY p.ID
+        ORDER BY total_qty_sold DESC
+        LIMIT 10
+    ''', (cutoff_date,)).fetchall()
+    
+    # 5. HIGHEST REVENUE PRODUCTS
+    highest_revenue = conn.execute('''
+        SELECT p.ID, p.sku, p.Name, p.sell_price,
+               COALESCE(SUM(sm.quantity), 0) as qty_sold,
+               COALESCE(SUM((sm.final_price * sm.quantity)), 0) as revenue
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `STOCK MOVEMENT` sm ON p.ID = sm.product_id AND sm.type = 'SELL' AND sm.timestamp >= ?
+        GROUP BY p.ID
+        ORDER BY revenue DESC
+        LIMIT 10
+    ''', (cutoff_date,)).fetchall()
+    
+    # 6. MOST PROFITABLE PRODUCTS
+    most_profitable = conn.execute('''
+        SELECT p.ID, p.sku, p.Name, p.buy_price, p.sell_price,
+               COALESCE(SUM(sm.quantity), 0) as qty_sold,
+               COALESCE(SUM(sm.profit), 0) as total_profit
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `STOCK MOVEMENT` sm ON p.ID = sm.product_id AND sm.type = 'SELL' AND sm.timestamp >= ?
+        GROUP BY p.ID
+        ORDER BY total_profit DESC
+        LIMIT 10
+    ''', (cutoff_date,)).fetchall()
+    
+    # 7. DEAD STOCK (products with quantity > 0 but no recent sales)
+    dead_stock = conn.execute('''
+        SELECT p.ID, p.sku, p.Name, p.quantity, 
+               COUNT(sm.id) as sale_count
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `STOCK MOVEMENT` sm ON p.ID = sm.product_id AND sm.type = 'SELL' AND sm.timestamp >= ?
+        WHERE p.quantity > 0
+        GROUP BY p.ID
+        HAVING COUNT(sm.id) = 0
+        ORDER BY p.quantity DESC
+    ''', (cutoff_date,)).fetchall()
+    
+    # 8. LOW STOCK (products below reorder level)
+    low_stock = conn.execute('''
+        SELECT ID, sku, Name, quantity, reorder_level
+        FROM `PRODUCT TABLE (Core Table)`
+        WHERE quantity <= reorder_level
+        ORDER BY quantity ASC
+    ''').fetchall()
+    
+    # 9. CATEGORY PERFORMANCE
+    category_performance = conn.execute('''
+        SELECT c.id, c.name,
+               COALESCE(SUM(sm.quantity), 0) as qty_sold,
+               COALESCE(SUM((sm.final_price * sm.quantity)), 0) as revenue,
+               COALESCE(SUM(sm.profit), 0) as profit
+        FROM `CATEGORY TABLE` c
+        LEFT JOIN `PRODUCT TABLE (Core Table)` p ON c.id = p.category_id
+        LEFT JOIN `STOCK MOVEMENT` sm ON p.ID = sm.product_id AND sm.type = 'SELL' AND sm.timestamp >= ?
+        GROUP BY c.id
+        ORDER BY revenue DESC
+    ''', (cutoff_date,)).fetchall()
+    
+    conn.close()
+    
+    data = {
+        'total_revenue': round(total_revenue, 2),
+        'total_profit': round(total_profit, 2),
+        'total_items_sold': int(total_items_sold),
+        'top_selling': top_selling,
+        'highest_revenue': highest_revenue,
+        'most_profitable': most_profitable,
+        'dead_stock': dead_stock,
+        'low_stock': low_stock,
+        'category_performance': category_performance,
+        'time_filter': time_filter
+    }
+    
+    return render_template('analytics.html', data=data)
+
+# ==================== POS BILLING ROUTES ====================
+
+@app.route('/pos')
+def pos_billing():
+    """POS Billing Dashboard"""
+    conn = get_db_connection()
+    categories = conn.execute('SELECT * FROM `CATEGORY TABLE` ORDER BY name').fetchall()
+    conn.close()
+    return render_template('pos_billing.html', categories=categories)
+
+@app.route('/api/pos/search-product', methods=['POST'])
+def pos_search_product():
+    """Search product by SKU/barcode or name for POS"""
+    data = request.get_json()
+    search_term = data.get('search', '').strip()
+    
+    if not search_term or len(search_term) < 2:
+        return jsonify({'error': 'Search term too short'}), 400
+    
+    conn = get_db_connection()
+    
+    # Search by SKU/barcode or name
+    products = conn.execute('''
+        SELECT p.ID, p.sku, p.Name, p.buy_price, p.sell_price, p.quantity, c.name as category_name
+        FROM `PRODUCT TABLE (Core Table)` p
+        LEFT JOIN `CATEGORY TABLE` c ON p.category_id = c.id
+        WHERE p.sku LIKE ? OR LOWER(p.Name) LIKE LOWER(?)
+        LIMIT 10
+    ''', (f'%{search_term}%', f'%{search_term}%')).fetchall()
+    
+    conn.close()
+    
+    if not products:
+        return jsonify({'error': 'No products found'}), 404
+    
+    return jsonify([dict(p) for p in products])
+
+@app.route('/api/pos/transaction', methods=['POST'])
+def create_pos_transaction():
+    """Create a POS transaction with items"""
+    data = request.get_json()
+    
+    items = data.get('items', [])
+    payment_method = data.get('payment_method', 'cash')
+    amount_received = float(data.get('amount_received', 0))
+    notes = data.get('notes', '')
+    
+    if not items:
+        return jsonify({'error': 'No items in cart'}), 400
+    
+    conn = get_db_connection()
+    
+    try:
+        # Calculate totals
+        subtotal = 0
+        total_discount = 0
+        total_tax = 0
+        total_profit = 0
+        
+        for item in items:
+            line_total = float(item['line_total'])
+            subtotal += line_total
+            total_discount += float(item.get('discount_value', 0))
+            total_tax += float(item.get('cgst', 0)) + float(item.get('sgst', 0))
+            total_profit += float(item.get('total_profit', 0))
+        
+        # Calculate final amount and round-off
+        final_amount = round(subtotal - total_discount + total_tax, 2)
+        round_off = round(final_amount - round(final_amount), 2)
+        final_amount = round(final_amount)
+        
+        change_return = amount_received - final_amount if amount_received > 0 else 0
+        
+        # Insert transaction
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO `TRANSACTIONS` 
+            (subtotal, total_discount, total_tax, total_profit, round_off, final_amount, 
+             payment_method, amount_received, change_return, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (subtotal, total_discount, total_tax, total_profit, round_off, final_amount,
+              payment_method, amount_received if amount_received > 0 else None, 
+              change_return if change_return > 0 else 0, notes))
+        
+        transaction_id = cursor.lastrowid
+        conn.commit()
+        
+        # Insert transaction items and update stock
+        for item in items:
+            product_id = int(item['product_id'])
+            quantity = float(item['quantity'])
+            
+            cursor.execute('''
+                INSERT INTO `TRANSACTION_ITEMS`
+                (transaction_id, product_id, product_name, quantity, unit_type, unit_price, 
+                 buy_price, discount_type, discount_value, final_unit_price, line_total,
+                 gst_percentage, cgst, sgst, profit_per_unit, total_profit)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                transaction_id,
+                product_id,
+                item['product_name'],
+                quantity,
+                item.get('unit_type', 'pcs'),
+                float(item['unit_price']),
+                float(item['buy_price']),
+                item.get('discount_type', 'flat'),
+                float(item.get('discount_value', 0)),
+                float(item['final_unit_price']),
+                float(item['line_total']),
+                float(item.get('gst_percentage', 0)),
+                float(item.get('cgst', 0)),
+                float(item.get('sgst', 0)),
+                float(item.get('profit_per_unit', 0)),
+                float(item.get('total_profit', 0))
+            ))
+            
+            # Update product stock and log movement
+            conn.execute(
+                'UPDATE `PRODUCT TABLE (Core Table)` SET quantity = quantity - ? WHERE ID = ?',
+                (quantity, product_id)
+            )
+            
+            conn.execute(
+                'INSERT INTO `STOCK MOVEMENT` (product_id, type, quantity, discount, final_price, profit) VALUES (?, ?, ?, ?, ?, ?)',
+                (product_id, 'SELL', quantity, float(item.get('discount_value', 0)), 
+                 float(item['final_unit_price']), float(item.get('total_profit', 0)))
+            )
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'transaction_id': transaction_id,
+            'final_amount': final_amount,
+            'change_return': change_return
+        }), 201
+    
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/pos/transactions', methods=['GET'])
+def get_pos_transactions():
+    """Get recent transactions for dashboard"""
+    limit = request.args.get('limit', 10, type=int)
+    
+    conn = get_db_connection()
+    transactions = conn.execute('''
+        SELECT id, transaction_date, subtotal, total_discount, total_tax, final_amount, 
+               payment_method, total_profit
+        FROM `TRANSACTIONS`
+        ORDER BY transaction_date DESC
+        LIMIT ?
+    ''', (limit,)).fetchall()
+    conn.close()
+    
+    return jsonify([dict(t) for t in transactions])
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

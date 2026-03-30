@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            background-color: #5a6268;
+        }
+        
+        .time-filters {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .time-filters a {
+            padding: 8px 16px;
+            background-color: #e9ecef;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .time-filters a.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .time-filters a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .card.revenue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card.profit {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .card.sales {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .card-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        /* Tables */
+        .section {
+            margin-top: 40px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 30px;
+        }
+        
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        td {
+            font-size: 14px;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 20px;
+        }
+        
+        .warning h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .warning ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .warning li {
+            margin-bottom: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .grid-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        .category-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .category-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 13px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .profit-positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .profit-negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .stock-critical {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>📊 Analytics Dashboard</h1>
+            <div class="time-filters">
+                <a href="/analytics?time_filter=7" {% if data.time_filter == '7' %}class="active"{% endif %}>7 Days</a>
+                <a href="/analytics?time_filter=30" {% if data.time_filter == '30' %}class="active"{% endif %}>30 Days</a>
+                <a href="/analytics?time_filter=180" {% if data.time_filter == '180' %}class="active"{% endif %}>6 Months</a>
+                <a href="/analytics?time_filter=365" {% if data.time_filter == '365' %}class="active"{% endif %}>1 Year</a>
+                <a href="/products" class="btn" style="background-color: #6c757d; margin-left: 10px;">Back to Products</a>
+            </div>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card revenue">
+                <div class="card-label">Total Revenue</div>
+                <div class="card-value">₹{{ "%.2f"|format(data.total_revenue) }}</div>
+            </div>
+            <div class="card profit">
+                <div class="card-label">Total Profit</div>
+                <div class="card-value">₹{{ "%.2f"|format(data.total_profit) }}</div>
+            </div>
+            <div class="card sales">
+                <div class="card-label">Total Items Sold</div>
+                <div class="card-value">{{ data.total_items_sold }}</div>
+            </div>
+        </div>
+        
+        <!-- Top Selling Products -->
+        <div class="section">
+            <h2 class="section-title">🏆 Top Selling Products</h2>
+            {% if data.top_selling %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.top_selling %}
+                    <tr>
+                        <td>{{ product.sku }}</td>
+                        <td>{{ product.Name }}</td>
+                        <td>{{ product.total_qty_sold }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No sales data available for the selected period.</div>
+            {% endif %}
+        </div>
+        
+        <!-- Highest Revenue Products -->
+        <div class="section">
+            <h2 class="section-title">💰 Highest Revenue Products</h2>
+            {% if data.highest_revenue %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Sell Price</th>
+                        <th>Quantity Sold</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.highest_revenue %}
+                    <tr>
+                        <td>{{ product.sku }}</td>
+                        <td>{{ product.Name }}</td>
+                        <td>₹{{ "%.2f"|format(product.sell_price or 0) }}</td>
+                        <td>{{ product.qty_sold }}</td>
+                        <td>₹{{ "%.2f"|format(product.revenue or 0) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No revenue data available for the selected period.</div>
+            {% endif %}
+        </div>
+        
+        <!-- Most Profitable Products -->
+        <div class="section">
+            <h2 class="section-title">📈 Most Profitable Products</h2>
+            {% if data.most_profitable %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Buy Price</th>
+                        <th>Sell Price</th>
+                        <th>Quantity Sold</th>
+                        <th>Total Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.most_profitable %}
+                    <tr>
+                        <td>{{ product.sku }}</td>
+                        <td>{{ product.Name }}</td>
+                        <td>₹{{ "%.2f"|format(product.buy_price or 0) }}</td>
+                        <td>₹{{ "%.2f"|format(product.sell_price or 0) }}</td>
+                        <td>{{ product.qty_sold }}</td>
+                        <td class="{% if product.total_profit >= 0 %}profit-positive{% else %}profit-negative{% endif %}">
+                            ₹{{ "%.2f"|format(product.total_profit or 0) }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">No profit data available for the selected period.</div>
+            {% endif %}
+        </div>
+        
+        <!-- Category Performance -->
+        <div class="section">
+            <h2 class="section-title">📂 Category Performance</h2>
+            {% if data.category_performance %}
+            <div class="grid-section">
+                {% for category in data.category_performance %}
+                {% if category.revenue > 0 or category.qty_sold > 0 %}
+                <div class="category-card">
+                    <h3>{{ category.name }}</h3>
+                    <div class="category-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value">₹{{ "%.2f"|format(category.revenue or 0) }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Profit</div>
+                            <div class="stat-value profit-positive">₹{{ "%.2f"|format(category.profit or 0) }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Units Sold</div>
+                            <div class="stat-value">{{ category.qty_sold }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No category data available.</div>
+            {% endif %}
+        </div>
+        
+        <!-- Dead Stock Warning -->
+        {% if data.dead_stock %}
+        <div class="section">
+            <div class="warning">
+                <h3>⚠️ Dead Stock Alert ({{ data.dead_stock|length }} products)</h3>
+                <p>These products have inventory but no recent sales activity:</p>
+                <ul>
+                    {% for product in data.dead_stock[:10] %}
+                    <li><strong>{{ product.Name }}</strong> (SKU: {{ product.sku }}) — {{ product.quantity }} units in stock</li>
+                    {% endfor %}
+                    {% if data.dead_stock|length > 10 %}
+                    <li><strong>...and {{ data.dead_stock|length - 10 }} more</strong></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Low Stock Alert -->
+        {% if data.low_stock %}
+        <div class="section">
+            <h2 class="section-title">📦 Low Stock Alert ({{ data.low_stock|length }} products)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.low_stock %}
+                    <tr class="stock-critical">
+                        <td>{{ product.sku }}</td>
+                        <td>{{ product.Name }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.reorder_level }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

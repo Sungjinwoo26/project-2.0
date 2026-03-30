@@ -356,7 +356,7 @@
             document.getElementById('productName').textContent = product.Name;
             document.getElementById('productSku').textContent = product.sku;
             document.getElementById('productCategory').textContent = product.category_name || 'N/A';
-            document.getElementById('productPrice').textContent = `₹${product.price.toFixed(2)}`;
+            document.getElementById('productPrice').textContent = `₹${product.sell_price.toFixed(2)}`;
             document.getElementById('productQuantity').textContent = product.quantity;
             document.getElementById('productShelf').textContent = product.shelf_number;
             document.getElementById('productReorder').textContent = product.reorder_level;

@@ -261,11 +261,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="price">Price *</label>
-                        <input type="number" id="price" name="price" step="0.01" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="quantity">Quantity *</label>
                         <input type="number" id="quantity" name="quantity" min="0" required>
                     </div>
@@ -313,7 +308,7 @@
                         <td>{{ product.sku }}</td>
                         <td>{{ product.Name }}</td>
                         <td>{{ product.category_name or '-' }}</td>
-                        <td>${{ "%.2f"|format(product.price) }}</td>
+                        <td>₹{{ "%.2f"|format(product.sell_price or 0) }}</td>
                         <td class="{% if product.quantity <= product.reorder_level %}low-stock{% endif %}">
                             {{ product.quantity }}
                             {% if product.quantity <= product.reorder_level %}⚠️{% endif %}
@@ -370,11 +365,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="edit_price">Price *</label>
-                        <input type="number" id="edit_price" name="price" step="0.01" min="0" required>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="edit_quantity">Quantity *</label>
                         <input type="number" id="edit_quantity" name="quantity" min="0" required>
                     </div>
@@ -409,7 +399,7 @@
                     document.getElementById('edit_sku').value = product.sku;
                     document.getElementById('edit_name').value = product.Name;
                     document.getElementById('edit_category_id').value = product.category_id || '';
-                    document.getElementById('edit_price').value = product.price;
+                    document.getElementById('edit_sell_price').value = product.sell_price || 0;
                     document.getElementById('edit_quantity').value = product.quantity;
                     document.getElementById('edit_shelf_number').value = product.shelf_number;
                     document.getElementById('edit_reorder_level').value = product.reorder_level;
