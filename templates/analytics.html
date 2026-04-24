@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard</title>
+    <title>{{ _('Analytics Dashboard') }}</title>
     <style>
         * {
             margin: 0;
@@ -252,44 +252,57 @@
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+    <div style="background-color: #f8f9fa; padding: 10px 20px; text-align: right; border-bottom: 1px solid #dee2e6;">
+        <span style="margin-right: 10px; font-weight: bold; color: #666;">{{ _('Language:') }}</span>
+        <a href="/set_language/en" style="margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold;">EN</a>
+        <a href="/set_language/hi" style="margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold;">हिन्दी</a>
+        <a href="/set_language/mr" style="text-decoration: none; color: #007bff; font-weight: bold;">मराठी</a>
+    </div>
+
     <div class="container">
+        <div style="position: absolute; top: 30px; right: 30px; display: flex; gap: 10px;">
+            <a href="/set_language/en" style="padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">English</a>
+            <a href="/set_language/hi" style="padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">हिंदी</a>
+            <a href="/set_language/mr" style="padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">मराठी</a>
+        </div>
         <div class="header-section">
-            <h1>📊 Analytics Dashboard</h1>
+            <h1>📊 {{ _('Analytics Dashboard') }}</h1>
             <div class="time-filters">
-                <a href="/analytics?time_filter=7" {% if data.time_filter == '7' %}class="active"{% endif %}>7 Days</a>
-                <a href="/analytics?time_filter=30" {% if data.time_filter == '30' %}class="active"{% endif %}>30 Days</a>
-                <a href="/analytics?time_filter=180" {% if data.time_filter == '180' %}class="active"{% endif %}>6 Months</a>
-                <a href="/analytics?time_filter=365" {% if data.time_filter == '365' %}class="active"{% endif %}>1 Year</a>
-                <a href="/products" class="btn" style="background-color: #6c757d; margin-left: 10px;">Back to Products</a>
+                <a href="/analytics?time_filter=7" {% if data.time_filter == '7' %}class="active"{% endif %}>{{ _('7 Days') }}</a>
+                <a href="/analytics?time_filter=30" {% if data.time_filter == '30' %}class="active"{% endif %}>{{ _('30 Days') }}</a>
+                <a href="/analytics?time_filter=180" {% if data.time_filter == '180' %}class="active"{% endif %}>{{ _('6 Months') }}</a>
+                <a href="/analytics?time_filter=365" {% if data.time_filter == '365' %}class="active"{% endif %}>{{ _('1 Year') }}</a>
+                <a href="/products" class="btn" style="background-color: #6c757d; margin-left: 10px;">{{ _('Back to Products') }}</a>
             </div>
         </div>
         
         <!-- Summary Cards -->
         <div class="summary-cards">
             <div class="card revenue">
-                <div class="card-label">Total Revenue</div>
+                <div class="card-label">{{ _('Total Revenue') }}</div>
                 <div class="card-value">₹{{ "%.2f"|format(data.total_revenue) }}</div>
             </div>
             <div class="card profit">
-                <div class="card-label">Total Profit</div>
+                <div class="card-label">{{ _('Total Profit') }}</div>
                 <div class="card-value">₹{{ "%.2f"|format(data.total_profit) }}</div>
             </div>
             <div class="card sales">
-                <div class="card-label">Total Items Sold</div>
+                <div class="card-label">{{ _('Total Items Sold') }}</div>
                 <div class="card-value">{{ data.total_items_sold }}</div>
             </div>
         </div>
         
         <!-- Top Selling Products -->
         <div class="section">
-            <h2 class="section-title">🏆 Top Selling Products</h2>
+            <h2 class="section-title">🏆 {{ _('Top Selling Products') }}</h2>
             {% if data.top_selling %}
             <table>
                 <thead>
                     <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Quantity Sold</th>
+                        <th>{{ _('SKU') }}</th>
+                        <th>{{ _('Product Name') }}</th>
+                        <th>{{ _('Quantity Sold') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -303,22 +316,22 @@
                 </tbody>
             </table>
             {% else %}
-            <div class="empty-state">No sales data available for the selected period.</div>
+            <div class="empty-state">{{ _('No sales data available for the selected period.') }}</div>
             {% endif %}
         </div>
         
         <!-- Highest Revenue Products -->
         <div class="section">
-            <h2 class="section-title">💰 Highest Revenue Products</h2>
+            <h2 class="section-title">💰 {{ _('Highest Revenue Products') }}</h2>
             {% if data.highest_revenue %}
             <table>
                 <thead>
                     <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Sell Price</th>
-                        <th>Quantity Sold</th>
-                        <th>Revenue</th>
+                        <th>{{ _('SKU') }}</th>
+                        <th>{{ _('Product Name') }}</th>
+                        <th>{{ _('Sell Price') }}</th>
+                        <th>{{ _('Quantity Sold') }}</th>
+                        <th>{{ _('Revenue') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -334,23 +347,23 @@
                 </tbody>
             </table>
             {% else %}
-            <div class="empty-state">No revenue data available for the selected period.</div>
+            <div class="empty-state">{{ _('No revenue data available for the selected period.') }}</div>
             {% endif %}
         </div>
         
         <!-- Most Profitable Products -->
         <div class="section">
-            <h2 class="section-title">📈 Most Profitable Products</h2>
+            <h2 class="section-title">{{ _('📈 Most Profitable Products') }}</h2>
             {% if data.most_profitable %}
             <table>
                 <thead>
                     <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Buy Price</th>
-                        <th>Sell Price</th>
-                        <th>Quantity Sold</th>
-                        <th>Total Profit</th>
+                        <th>{{ _('SKU') }}</th>
+                        <th>{{ _('Product Name') }}</th>
+                        <th>{{ _('Buy Price') }}</th>
+                        <th>{{ _('Sell Price') }}</th>
+                        <th>{{ _('Quantity Sold') }}</th>
+                        <th>{{ _('Total Profit') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -369,13 +382,13 @@
                 </tbody>
             </table>
             {% else %}
-            <div class="empty-state">No profit data available for the selected period.</div>
+            <div class="empty-state">{{ _('No profit data available for the selected period.') }}</div>
             {% endif %}
         </div>
         
         <!-- Category Performance -->
         <div class="section">
-            <h2 class="section-title">📂 Category Performance</h2>
+            <h2 class="section-title">{{ _('📂 Category Performance') }}</h2>
             {% if data.category_performance %}
             <div class="grid-section">
                 {% for category in data.category_performance %}
@@ -384,15 +397,15 @@
                     <h3>{{ category.name }}</h3>
                     <div class="category-stats">
                         <div class="stat-item">
-                            <div class="stat-label">Revenue</div>
+                            <div class="stat-label">{{ _('Revenue') }}</div>
                             <div class="stat-value">₹{{ "%.2f"|format(category.revenue or 0) }}</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-label">Profit</div>
+                            <div class="stat-label">{{ _('Profit') }}</div>
                             <div class="stat-value profit-positive">₹{{ "%.2f"|format(category.profit or 0) }}</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-label">Units Sold</div>
+                            <div class="stat-label">{{ _('Units Sold') }}</div>
                             <div class="stat-value">{{ category.qty_sold }}</div>
                         </div>
                     </div>
@@ -401,7 +414,7 @@
                 {% endfor %}
             </div>
             {% else %}
-            <div class="empty-state">No category data available.</div>
+            <div class="empty-state">{{ _('No category data available.') }}</div>
             {% endif %}
         </div>
         
@@ -409,14 +422,14 @@
         {% if data.dead_stock %}
         <div class="section">
             <div class="warning">
-                <h3>⚠️ Dead Stock Alert ({{ data.dead_stock|length }} products)</h3>
-                <p>These products have inventory but no recent sales activity:</p>
+                <h3>{{ _('⚠️ Dead Stock Alert') }} ({{ data.dead_stock|length }} {{ _('products') }})</h3>
+                <p>{{ _('These products have inventory but no recent sales activity:') }}</p>
                 <ul>
                     {% for product in data.dead_stock[:10] %}
-                    <li><strong>{{ product.Name }}</strong> (SKU: {{ product.sku }}) — {{ product.quantity }} units in stock</li>
+                    <li><strong>{{ product.Name }}</strong> (SKU: {{ product.sku }}) — {{ product.quantity }} {{ _('units in stock') }}</li>
                     {% endfor %}
                     {% if data.dead_stock|length > 10 %}
-                    <li><strong>...and {{ data.dead_stock|length - 10 }} more</strong></li>
+                    <li><strong>{{ _('...and') }} {{ data.dead_stock|length - 10 }} {{ _('more') }}</strong></li>
                     {% endif %}
                 </ul>
             </div>
@@ -426,14 +439,14 @@
         <!-- Low Stock Alert -->
         {% if data.low_stock %}
         <div class="section">
-            <h2 class="section-title">📦 Low Stock Alert ({{ data.low_stock|length }} products)</h2>
+            <h2 class="section-title">{{ _('📦 Low Stock Alert') }} ({{ data.low_stock|length }} {{ _('products') }})</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Current Stock</th>
-                        <th>Reorder Level</th>
+                        <th>{{ _('SKU') }}</th>
+                        <th>{{ _('Product Name') }}</th>
+                        <th>{{ _('Current Stock') }}</th>
+                        <th>{{ _('Reorder Level') }}</th>
                     </tr>
                 </thead>
                 <tbody>

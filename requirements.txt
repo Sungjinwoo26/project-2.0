@@ -1,4 +1,5 @@
 Flask==3.0.0
+Flask-Babel==4.0.1
 python-barcode==0.15.1
 Pillow==9.5.0
 opencv-python==4.8.1.78

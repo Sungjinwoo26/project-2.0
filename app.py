@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session
+from flask_babel import Babel, _
 import sqlite3
 from datetime import datetime
 import os
@@ -9,6 +10,17 @@ app = Flask(__name__)
 app.secret_key = 'inventory-management-secret-key-2024'
 DATABASE = 'Inventery_management_2_0.db'
 BARCODE_DIR = 'static/barcodes'
+
+# ==================== MULTILINGUAL SUPPORT (BABEL) ====================
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'hi', 'mr']
+
+def get_locale():
+    """Select language from session, or default to English"""
+    return session.get('lang', 'en')
+
+# Initialize Babel with the app and locale selector
+babel = Babel(app, locale_selector=get_locale)
 
 # Ensure barcode directory exists
 os.makedirs(BARCODE_DIR, exist_ok=True)
@@ -39,6 +51,15 @@ def generate_barcode(sku):
 def index():
     """Home page - redirects to product listing"""
     return redirect(url_for('view_products'))
+
+# ==================== LANGUAGE SWITCHING ====================
+
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    """Set language preference and redirect to referrer"""
+    if lang in ['en', 'hi', 'mr']:
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('view_products'))
 
 # ==================== CATEGORY ROUTES ====================
 

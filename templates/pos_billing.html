@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS Billing System</title>
+    <title>{{ _('POS Billing System') }}</title>
     <!-- Barcode Detection Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.10.2/dist/quagga.min.js"></script>
@@ -623,84 +623,91 @@
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+    <div style="background-color: rgba(0,0,0,0.3); padding: 8px 20px; text-align: right; position: fixed; top: 0; right: 0; z-index: 9000; border-radius: 0 0 0 8px;">
+        <span style="margin-right: 10px; font-weight: bold; color: #fff; font-size: 13px;">{{ _('Language:') }}</span>
+        <a href="/set_language/en" style="margin-right: 12px; text-decoration: none; color: #fff; font-weight: bold; font-size: 13px;">EN</a>
+        <a href="/set_language/hi" style="margin-right: 12px; text-decoration: none; color: #fff; font-weight: bold; font-size: 13px;">हिन्दी</a>
+        <a href="/set_language/mr" style="text-decoration: none; color: #fff; font-weight: bold; font-size: 13px;">मराठी</a>
+    </div>
     <div class="pos-container">
         <!-- Left Panel - Search & Product Selection -->
         <div class="panel">
-            <div class="panel-header">🔍 Search Product</div>
+            <div class="panel-header">🔍 {{ _('Search Product') }}</div>
             <div style="flex: 1; display: flex; flex-direction: column;">
                 <div class="search-bar" style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
-                    <input type="text" id="searchInput" placeholder="Search by SKU, name, or barcode... (auto-focus)" autofocus>
-                    <button id="scanBarcodeBtn" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">📷 Scan</button>
+                    <input type="text" id="searchInput" placeholder="{{ _('Search by SKU, name, or barcode...') }}" autofocus>
+                    <button id="scanBarcodeBtn" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">📷 {{ _('Scan') }}</button>
                 </div>
                 <div class="panel-content" id="searchResults" style="flex: 1;">
-                    <p style="color: #999; text-align: center;">Enter SKU/name to search products</p>
+                    <p style="color: #999; text-align: center;">{{ _('Enter SKU/name to search products') }}</p>
                 </div>
             </div>
         </div>
         
         <!-- Center Panel - Shopping Cart -->
         <div class="panel">
-            <div class="panel-header">🛒 Shopping Cart</div>
+            <div class="panel-header">🛒 {{ _('Shopping Cart') }}</div>
             <div class="panel-content">
                 <div id="cartItems"></div>
                 <div class="empty-cart" id="emptyCart">
                     <p style="font-size: 48px; margin-bottom: 10px;">📦</p>
-                    <p>Your cart is empty</p>
+                    <p>{{ _('Your cart is empty') }}</p>
                 </div>
-                <button class="clear-cart-btn" id="clearCartBtn">Clear Cart</button>
+                <button class="clear-cart-btn" id="clearCartBtn">{{ _('Clear Cart') }}</button>
             </div>
         </div>
         
         <!-- Right Panel - Summary & Payment -->
         <div class="panel">
-            <div class="panel-header">💰 Summary & Payment</div>
+            <div class="panel-header">💰 {{ _('Summary & Payment') }}</div>
             <div class="panel-content" style="padding: 10px;">
                 <div id="alerts"></div>
                 
                 <!-- Summary Cards -->
                 <div class="summary-box">
-                    <div class="summary-label">Subtotal</div>
+                    <div class="summary-label">{{ _('Subtotal') }}</div>
                     <div class="summary-value">₹<span id="subtotalAmount">0.00</span></div>
                 </div>
                 
                 <div class="summary-box">
-                    <div class="summary-label">Discount</div>
+                    <div class="summary-label">{{ _('Discount') }}</div>
                     <div class="summary-value" style="color: #dc3545;">₹<span id="discountAmount">0.00</span></div>
                 </div>
                 
                 <div class="summary-box">
-                    <div class="summary-label">Taxable Amount</div>
+                    <div class="summary-label">{{ _('Taxable Amount') }}</div>
                     <div class="summary-value">₹<span id="taxableAmount">0.00</span></div>
                 </div>
                 
                 <div class="summary-box">
-                    <div class="summary-label">GST (Tax)</div>
+                    <div class="summary-label">{{ _('GST (Tax)') }}</div>
                     <div class="summary-value" style="color: #ff6b6b;">₹<span id="taxAmount">0.00</span></div>
                 </div>
                 
                 <!-- Final Amount -->
                 <div class="final-amount">
-                    <div class="final-amount-label">FINAL AMOUNT</div>
+                    <div class="final-amount-label">{{ _('FINAL AMOUNT') }}</div>
                     <div class="final-amount-value">₹<span id="finalAmount">0.00</span></div>
                 </div>
                 
                 <!-- Payment Section -->
                 <div class="payment-section">
-                    <label>Payment Method</label>
+                    <label>{{ _('Payment Method') }}</label>
                     <select id="paymentMethod">
-                        <option value="cash">Cash 💵</option>
+                        <option value="cash">{{ _('Cash') }} 💵</option>
                         <option value="upi">UPI 📱</option>
-                        <option value="card">Card 💳</option>
-                        <option value="split">Split Payment 🔀</option>
+                        <option value="card">{{ _('Card') }} 💳</option>
+                        <option value="split">{{ _('Split Payment') }} 🔀</option>
                     </select>
                 </div>
                 
                 <div class="payment-section" id="amountReceivedSection">
-                    <label>Amount Received</label>
-                    <input type="number" id="amountReceived" placeholder="Enter amount" step="0.01" min="0">
+                    <label>{{ _('Amount Received') }}</label>
+                    <input type="number" id="amountReceived" placeholder="{{ _('Enter amount') }}" step="0.01" min="0">
                     
                     <div class="change-display" id="changeDisplay" style="display: none;">
-                        <div class="change-label">Change</div>
+                        <div class="change-label">{{ _('Change') }}</div>
                         <div class="change-value">₹<span id="changeAmount">0.00</span></div>
                     </div>
                 </div>
@@ -708,7 +715,7 @@
                 <div class="payment-section" id="splitPaymentSection" style="display: none;">
                     <div class="payment-method-group">
                         <div class="payment-input">
-                            <label>Cash</label>
+                            <label>{{ _('Cash') }}</label>
                             <input type="number" id="splitCash" placeholder="₹0" step="0.01" min="0">
                         </div>
                         <div class="payment-input">
@@ -718,25 +725,25 @@
                     </div>
                     <div class="payment-method-group">
                         <div class="payment-input">
-                            <label>Card</label>
+                            <label>{{ _('Card') }}</label>
                             <input type="number" id="splitCard" placeholder="₹0" step="0.01" min="0">
                         </div>
                         <div class="payment-input">
-                            <label>Other</label>
+                            <label>{{ _('Other') }}</label>
                             <input type="number" id="splitOther" placeholder="₹0" step="0.01" min="0">
                         </div>
                     </div>
                 </div>
                 
                 <div class="payment-section">
-                    <label>Notes (Optional)</label>
-                    <input type="text" id="transactionNotes" placeholder="e.g., Customer name, special instructions">
+                    <label>{{ _('Notes (Optional)') }}</label>
+                    <input type="text" id="transactionNotes" placeholder="{{ _('e.g., Customer name, special instructions') }}">
                 </div>
                 
-                <button class="complete-sale-btn" id="completeSaleBtn" disabled>Complete Sale</button>
-                <a href="/products" class="back-btn">← Back to Inventory</a>
+                <button class="complete-sale-btn" id="completeSaleBtn" disabled>{{ _('Complete Sale') }}</button>
+                <a href="/products" class="back-btn">← {{ _('Back to Inventory') }}</a>
                 
-                <div class="loading" id="loading">Processing...</div>
+                <div class="loading" id="loading">{{ _('Processing...') }}</div>
             </div>
         </div>
     </div>

@@ -1,0 +1,600 @@
+# Marathi translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-24 06:42+0530\n"
+"PO-Revision-Date: 2026-04-24 08:42+0530\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: mr\n"
+"Language-Team: mr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/analytics.html:6 templates/analytics.html:262
+msgid "Analytics Dashboard"
+msgstr "विश्लेषण डॅशबोर्ड"
+
+#: templates/analytics.html:264
+msgid "7 Days"
+msgstr "7 दिवस"
+
+#: templates/analytics.html:265
+msgid "30 Days"
+msgstr "30 दिवस"
+
+#: templates/analytics.html:266
+msgid "6 Months"
+msgstr "6 महिने"
+
+#: templates/analytics.html:267
+msgid "1 Year"
+msgstr "1 वर्ष"
+
+#: templates/analytics.html:268 templates/returns.html:352
+#: templates/scan.html:271 templates/stock_history.html:178
+msgid "Back to Products"
+msgstr "उत्पादांकडे परत"
+
+#: templates/analytics.html:275
+msgid "Total Revenue"
+msgstr "एकूण महसूल"
+
+#: templates/analytics.html:279 templates/analytics.html:358
+msgid "Total Profit"
+msgstr "एकूण नफा"
+
+#: templates/analytics.html:283
+msgid "Total Items Sold"
+msgstr "एकूण विकलेल्या वस्तू"
+
+#: templates/analytics.html:290
+msgid "Top Selling Products"
+msgstr "सर्वाधिक विकले जाणारे उत्पाद"
+
+#: templates/analytics.html:295 templates/analytics.html:322
+#: templates/analytics.html:353 templates/analytics.html:438
+#: templates/products.html:355 templates/products.html:420
+#: templates/returns.html:327
+msgid "SKU"
+msgstr "SKU"
+
+#: templates/analytics.html:296 templates/analytics.html:323
+#: templates/analytics.html:354 templates/analytics.html:439
+#: templates/products.html:360 templates/returns.html:328
+#: templates/stock_history.html:225
+msgid "Product Name"
+msgstr "उत्पादाचे नाव"
+
+#: templates/analytics.html:297 templates/analytics.html:325
+#: templates/analytics.html:357
+msgid "Quantity Sold"
+msgstr "विकलेली संख्या"
+
+#: templates/analytics.html:311
+msgid "No sales data available for the selected period."
+msgstr "निवडलेल्या कालावधीसाठी कोणताही विक्री डेटा उपलब्ध नाही."
+
+#: templates/analytics.html:317
+msgid "Highest Revenue Products"
+msgstr "सर्वाधिक महसूल उत्पाद"
+
+#: templates/analytics.html:324 templates/analytics.html:356
+#: templates/products.html:424
+msgid "Sell Price"
+msgstr "विक्री किंमत"
+
+#: templates/analytics.html:326 templates/analytics.html:392
+msgid "Revenue"
+msgstr "महसूल"
+
+#: templates/analytics.html:342
+msgid "No revenue data available for the selected period."
+msgstr "निवडलेल्या कालावधीसाठी कोणताही महसूल डेटा उपलब्ध नाही."
+
+#: templates/analytics.html:348
+msgid "📈 Most Profitable Products"
+msgstr "📈 सर्वाधिक फायदेशीर उत्पाद"
+
+#: templates/analytics.html:355 templates/products.html:425
+msgid "Buy Price"
+msgstr "खरेदी किंमत"
+
+#: templates/analytics.html:377
+msgid "No profit data available for the selected period."
+msgstr "निवडलेल्या कालावधीसाठी कोणताही नफा डेटा उपलब्ध नाही."
+
+#: templates/analytics.html:383
+msgid "📂 Category Performance"
+msgstr "📂 श्रेणी कामगिरी"
+
+#: templates/analytics.html:396
+msgid "Profit"
+msgstr "नफा"
+
+#: templates/analytics.html:400
+msgid "Units Sold"
+msgstr "विकलेल्या युनिट्स"
+
+#: templates/analytics.html:409
+msgid "No category data available."
+msgstr "कोणताही श्रेणी डेटा उपलब्ध नाही."
+
+#: templates/analytics.html:417
+msgid "⚠️ Dead Stock Alert"
+msgstr "⚠️ डेड स्टॉक सूचना"
+
+#: templates/analytics.html:417 templates/analytics.html:434
+msgid "products"
+msgstr "उत्पाद"
+
+#: templates/analytics.html:418
+msgid "These products have inventory but no recent sales activity:"
+msgstr "या उत्पादांमध्ये इन्व्हेंटरी आहे परंतु अलीकडील कोणतीही विक्री क्रियाकलाप नाही:"
+
+#: templates/analytics.html:421
+msgid "units in stock"
+msgstr "स्टॉकमधील युनिट्स"
+
+#: templates/analytics.html:424
+msgid "...and"
+msgstr "...आणि"
+
+#: templates/analytics.html:424
+msgid "more"
+msgstr "अधिक"
+
+#: templates/analytics.html:434
+msgid "📦 Low Stock Alert"
+msgstr "📦 कमी स्टॉक सूचना"
+
+#: templates/analytics.html:440
+msgid "Current Stock"
+msgstr "सध्याचा स्टॉक"
+
+#: templates/analytics.html:441 templates/products.html:395
+#: templates/products.html:428
+msgid "Reorder Level"
+msgstr "पुनर्ऑर्डर पातळी"
+
+#: templates/pos_billing.html:6
+msgid "POS Billing System"
+msgstr "POS बिलिंग प्रणाली"
+
+#: templates/products.html:6 templates/products.html:272
+msgid "Product Management"
+msgstr "उत्पाद व्यवस्थापन"
+
+#: templates/products.html:288
+msgid "POS Billing"
+msgstr "POS बिलिंग"
+
+#: templates/products.html:291
+msgid "Scan Barcode"
+msgstr "बारकोड स्कॅन करा"
+
+#: templates/products.html:294
+msgid "Process Returns"
+msgstr "परतावा प्रक्रिया"
+
+#: templates/products.html:297
+msgid "Stock History"
+msgstr "स्टॉक इतिहास"
+
+#: templates/products.html:300
+msgid "Analytics"
+msgstr "विश्लेषण"
+
+#: templates/products.html:306 templates/products.html:326
+msgid "Search & Filter"
+msgstr "शोधा आणि फिल्टर करा"
+
+#: templates/products.html:310
+msgid "Search by Product Name"
+msgstr "उत्पादाच्या नावाने शोधा"
+
+#: templates/products.html:311
+msgid "Enter product name..."
+msgstr "उत्पादाचे नाव प्रविष्ट करा..."
+
+#: templates/products.html:315
+msgid "Filter by Category"
+msgstr "श्रेणीनुसार फिल्टर करा"
+
+#: templates/products.html:317
+msgid "-- All Categories --"
+msgstr "-- सर्व श्रेणी --"
+
+#: templates/products.html:327
+msgid "Clear Filters"
+msgstr "फिल्टर साफ करा"
+
+#: templates/products.html:334
+msgid "Add New Category"
+msgstr "नवीन श्रेणी जोडा"
+
+#: templates/products.html:338
+msgid "Category Name"
+msgstr "श्रेणीचे नाव"
+
+#: templates/products.html:339
+msgid "e.g., Electronics, Furniture"
+msgstr "उदा., इलेक्ट्रॉनिक्स, फर्निचर"
+
+#: templates/products.html:344
+msgid "Add Category"
+msgstr "श्रेणी जोडा"
+
+#: templates/products.html:351
+msgid "Add New Product"
+msgstr "नवीन उत्पाद जोडा"
+
+#: templates/products.html:365 templates/products.html:423
+#: templates/returns.html:329 templates/stock_history.html:226
+msgid "Category"
+msgstr "श्रेणी"
+
+#: templates/products.html:367
+msgid "-- No Category --"
+msgstr "-- कोणतीही श्रेणी नाही --"
+
+#: templates/products.html:375
+msgid "Buying Price"
+msgstr "खरेदी किंमत"
+
+#: templates/products.html:380
+msgid "Selling Price"
+msgstr "विक्री किंमत"
+
+#: templates/products.html:385 templates/products.html:426
+#: templates/returns.html:308 templates/scan.html:261
+#: templates/stock_history.html:228
+msgid "Quantity"
+msgstr "प्रमाण"
+
+#: templates/products.html:390
+msgid "Shelf Number"
+msgstr "शेल्फ नंबर"
+
+#: templates/products.html:400
+msgid "Custom Barcode (Optional)"
+msgstr "सानुकूल बारकोड (पर्यायी)"
+
+#: templates/products.html:401
+msgid "Leave blank to auto-generate from SKU"
+msgstr "SKU वरून स्वयं-निर्मितीसाठी रिकामे ठेवा"
+
+#: templates/products.html:406
+msgid "Add Product"
+msgstr "उत्पाद जोडा"
+
+#: templates/products.html:413
+msgid "Product Inventory"
+msgstr "उत्पाद यादी"
+
+#: templates/products.html:413 templates/stock_history.html:198
+#: templates/stock_history.html:203 templates/stock_history.html:208
+msgid "items"
+msgstr "वस्तू"
+
+#: templates/products.html:419
+msgid "ID"
+msgstr "ID"
+
+#: templates/products.html:421
+msgid "Name"
+msgstr "नाव"
+
+#: templates/products.html:422
+msgid "Barcode"
+msgstr "बारकोड"
+
+#: templates/products.html:427
+msgid "Shelf"
+msgstr "शेल्फ"
+
+#: templates/products.html:429
+msgid "Actions"
+msgstr "क्रिया"
+
+#: templates/products.html:440
+msgid "View Barcode"
+msgstr "बारकोड पहा"
+
+#: templates/products.html:444
+msgid "No barcode"
+msgstr "बारकोड नाही"
+
+#: templates/products.html:457
+msgid "Edit"
+msgstr "संपादित करा"
+
+#: templates/products.html:458
+msgid "Buy"
+msgstr "खरेदी करा"
+
+#: templates/products.html:459
+msgid "Sell"
+msgstr "विका"
+
+#: templates/products.html:460
+msgid "Return"
+msgstr "परत करा"
+
+#: templates/products.html:461
+msgid "Are you sure you want to delete this product?"
+msgstr "तुम्हाला खरोखर हे उत्पाद हटवायचे आहे का?"
+
+#: templates/products.html:462
+msgid "Delete"
+msgstr "हटवा"
+
+#: templates/products.html:471
+msgid "No products found. Add your first product using the form above."
+msgstr "कोणतेही उत्पाद आढळले नाही. वरील फॉर्म वापरून तुमचे पहिले उत्पाद जोडा."
+
+#: templates/products.html:482
+msgid "Edit Product"
+msgstr "उत्पाद संपादित करा"
+
+#: templates/returns.html:6 templates/returns.html:236
+msgid "Returns Management"
+msgstr "परतावा व्यवस्थापन"
+
+#: templates/returns.html:239
+msgid "Process Return"
+msgstr "परतावा प्रक्रिया करा"
+
+#: templates/returns.html:244 templates/scan.html:188
+msgid "Scan with Camera"
+msgstr "कॅमेऱ्याने स्कॅन करा"
+
+#: templates/returns.html:247 templates/scan.html:191
+msgid "Enter Barcode Manually"
+msgstr "बारकोड मॅन्युअली प्रविष्ट करा"
+
+#: templates/returns.html:254 templates/scan.html:198
+msgid "Start Camera"
+msgstr "कॅमेरा सुरू करा"
+
+#: templates/returns.html:255 templates/scan.html:199
+msgid "Stop Camera"
+msgstr "कॅमेरा थांबवा"
+
+#: templates/returns.html:267 templates/scan.html:212
+msgid "Enter Barcode Number"
+msgstr "बारकोड नंबर प्रविष्ट करा"
+
+#: templates/returns.html:268 templates/scan.html:213
+msgid "Scan or type barcode..."
+msgstr "बारकोड स्कॅन करा किंवा टाइप करा..."
+
+#: templates/returns.html:270 templates/scan.html:215
+msgid "Search Product"
+msgstr "उत्पाद शोधा"
+
+#: templates/returns.html:278 templates/scan.html:223
+msgid "Product Found"
+msgstr "उत्पाद सापडले"
+
+#: templates/returns.html:278
+msgid "Enter Return Quantity"
+msgstr "परतावा प्रमाण प्रविष्ट करा"
+
+#: templates/returns.html:280 templates/scan.html:225
+msgid "Product Name:"
+msgstr "उत्पादाचे नाव:"
+
+#: templates/returns.html:284 templates/scan.html:229
+msgid "SKU:"
+msgstr "SKU:"
+
+#: templates/returns.html:288 templates/scan.html:233
+msgid "Category:"
+msgstr "श्रेणी:"
+
+#: templates/returns.html:294
+msgid "Return Quantity"
+msgstr "परतावा प्रमाण"
+
+#: templates/returns.html:297
+msgid "Confirm Return"
+msgstr "परतावा निश्चित करा"
+
+#: templates/returns.html:302 templates/scan.html:255
+msgid "Stock Action"
+msgstr "स्टॉक क्रिया"
+
+#: templates/returns.html:312 templates/scan.html:265
+msgid "SELL PRODUCT"
+msgstr "उत्पाद विका"
+
+#: templates/returns.html:313 templates/scan.html:266
+msgid "BUY PRODUCT"
+msgstr "उत्पाद खरेदी करा"
+
+#: templates/returns.html:320
+msgid "Recent Returns"
+msgstr "अलीकडील परतावे"
+
+#: templates/returns.html:320
+msgid "Last 50"
+msgstr "शेवटचे 50"
+
+#: templates/returns.html:326
+msgid "Date & Time"
+msgstr "दिनांक आणि वेळ"
+
+#: templates/returns.html:330
+msgid "Quantity Returned"
+msgstr "परत केलेले प्रमाण"
+
+#: templates/returns.html:347
+msgid "No returns yet. Scan a product barcode to process a return."
+msgstr "अद्याप कोणताही परतावा नाही. परतावा प्रक्रिया करण्यासाठी उत्पाद बारकोड स्कॅन करा."
+
+#: templates/scan.html:6 templates/scan.html:182
+msgid "Barcode Scanner"
+msgstr "बारकोड स्कॅनर"
+
+#: templates/scan.html:237
+msgid "Price:"
+msgstr "किंमत:"
+
+#: templates/scan.html:241
+msgid "Quantity:"
+msgstr "प्रमाण:"
+
+#: templates/scan.html:245
+msgid "Shelf Number:"
+msgstr "शेल्फ नंबर:"
+
+#: templates/scan.html:249
+msgid "Reorder Level:"
+msgstr "पुनर्ऑर्डर पातळी:"
+
+#: templates/stock_history.html:6 templates/stock_history.html:181
+msgid "Stock Movement History"
+msgstr "स्टॉक हालचाल इतिहास"
+
+#: templates/stock_history.html:182
+msgid "Complete audit trail of all inventory operations"
+msgstr "सर्व यादी ऑपरेशन्सचा संपूर्ण ऑडिट ट्रेल"
+
+#: templates/stock_history.html:197
+msgid "Buy Operations"
+msgstr "खरेदी ऑपरेशन्स"
+
+#: templates/stock_history.html:202
+msgid "Sell Operations"
+msgstr "विक्री ऑपरेशन्स"
+
+#: templates/stock_history.html:207
+msgid "Return Operations"
+msgstr "परतावा ऑपरेशन्स"
+
+#: templates/stock_history.html:212
+msgid "Total Operations"
+msgstr "एकूण ऑपरेशन्स"
+
+#: templates/stock_history.html:213
+msgid "All time"
+msgstr "सर्व वेळ"
+
+#: templates/stock_history.html:224
+msgid "Product SKU"
+msgstr "उत्पाद SKU"
+
+#: templates/stock_history.html:227
+msgid "Operation"
+msgstr "ऑपरेशन"
+
+#: templates/stock_history.html:229
+msgid "Timestamp"
+msgstr "वेळ शिक्का"
+
+#: templates/stock_history.html:241
+msgid "Uncategorized"
+msgstr "अवर्गीकृत"
+
+#: templates/stock_history.html:267
+msgid "No stock movements recorded yet"
+msgstr "अद्याप कोणतीही स्टॉक हालचाल नोंदवलेली नाही"
+
+#: templates/stock_history.html:268
+msgid "Start by adding products and performing buy/sell/return operations"
+msgstr "उत्पाद जोडून आणि खरेदी/विक्री/परतावा ऑपरेशन्स करून सुरुवात करा"
+
+msgid "Recent Returns (Last 50)"
+msgstr "अलीकडील परतावे (शेवटचे 50)"
+
+msgid "Language:"
+msgstr "भाषा:"
+
+msgid "GST"
+msgstr "GST"
+
+msgid "Search Product"
+msgstr "उत्पाद शोधा"
+
+msgid "Search by SKU, name, or barcode..."
+msgstr "SKU, नाव किंवा बारकोडने शोधा..."
+
+msgid "Scan"
+msgstr "स्कॅन"
+
+msgid "Enter SKU/name to search products"
+msgstr "उत्पाद शोधण्यासाठी SKU/नाव प्रविष्ट करा"
+
+msgid "Shopping Cart"
+msgstr "खरेदी कार्ट"
+
+msgid "Your cart is empty"
+msgstr "तुमची कार्ट रिकामी आहे"
+
+msgid "Clear Cart"
+msgstr "कार्ट साफ करा"
+
+msgid "Summary & Payment"
+msgstr "सारांश आणि देयक"
+
+msgid "Subtotal"
+msgstr "उप-एकूण"
+
+msgid "Discount"
+msgstr "सूट"
+
+msgid "Taxable Amount"
+msgstr "करपात्र रक्कम"
+
+msgid "GST (Tax)"
+msgstr "GST (कर)"
+
+msgid "FINAL AMOUNT"
+msgstr "अंतिम रक्कम"
+
+msgid "Payment Method"
+msgstr "देयक पद्धत"
+
+msgid "Cash"
+msgstr "रोख"
+
+msgid "Card"
+msgstr "कार्ड"
+
+msgid "Split Payment"
+msgstr "विभाजित देयक"
+
+msgid "Amount Received"
+msgstr "प्राप्त रक्कम"
+
+msgid "Enter amount"
+msgstr "रक्कम प्रविष्ट करा"
+
+msgid "Change"
+msgstr "परतावा"
+
+msgid "Other"
+msgstr "इतर"
+
+msgid "Notes (Optional)"
+msgstr "नोंदी (पर्यायी)"
+
+msgid "e.g., Customer name, special instructions"
+msgstr "उदा., ग्राहकाचे नाव, विशेष सूचना"
+
+msgid "Complete Sale"
+msgstr "विक्री पूर्ण करा"
+
+msgid "Back to Inventory"
+msgstr "यादीकडे परत"
+
+msgid "Processing..."
+msgstr "प्रक्रिया होत आहे..."

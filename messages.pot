@@ -1,0 +1,513 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-24 06:42+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/analytics.html:6 templates/analytics.html:262
+msgid "Analytics Dashboard"
+msgstr ""
+
+#: templates/analytics.html:264
+msgid "7 Days"
+msgstr ""
+
+#: templates/analytics.html:265
+msgid "30 Days"
+msgstr ""
+
+#: templates/analytics.html:266
+msgid "6 Months"
+msgstr ""
+
+#: templates/analytics.html:267
+msgid "1 Year"
+msgstr ""
+
+#: templates/analytics.html:268 templates/returns.html:352
+#: templates/scan.html:271 templates/stock_history.html:178
+msgid "Back to Products"
+msgstr ""
+
+#: templates/analytics.html:275
+msgid "Total Revenue"
+msgstr ""
+
+#: templates/analytics.html:279 templates/analytics.html:358
+msgid "Total Profit"
+msgstr ""
+
+#: templates/analytics.html:283
+msgid "Total Items Sold"
+msgstr ""
+
+#: templates/analytics.html:290
+msgid "Top Selling Products"
+msgstr ""
+
+#: templates/analytics.html:295 templates/analytics.html:322
+#: templates/analytics.html:353 templates/analytics.html:438
+#: templates/products.html:355 templates/products.html:420
+#: templates/returns.html:327
+msgid "SKU"
+msgstr ""
+
+#: templates/analytics.html:296 templates/analytics.html:323
+#: templates/analytics.html:354 templates/analytics.html:439
+#: templates/products.html:360 templates/returns.html:328
+#: templates/stock_history.html:225
+msgid "Product Name"
+msgstr ""
+
+#: templates/analytics.html:297 templates/analytics.html:325
+#: templates/analytics.html:357
+msgid "Quantity Sold"
+msgstr ""
+
+#: templates/analytics.html:311
+msgid "No sales data available for the selected period."
+msgstr ""
+
+#: templates/analytics.html:317
+msgid "Highest Revenue Products"
+msgstr ""
+
+#: templates/analytics.html:324 templates/analytics.html:356
+#: templates/products.html:424
+msgid "Sell Price"
+msgstr ""
+
+#: templates/analytics.html:326 templates/analytics.html:392
+msgid "Revenue"
+msgstr ""
+
+#: templates/analytics.html:342
+msgid "No revenue data available for the selected period."
+msgstr ""
+
+#: templates/analytics.html:348
+msgid "📈 Most Profitable Products"
+msgstr ""
+
+#: templates/analytics.html:355 templates/products.html:425
+msgid "Buy Price"
+msgstr ""
+
+#: templates/analytics.html:377
+msgid "No profit data available for the selected period."
+msgstr ""
+
+#: templates/analytics.html:383
+msgid "📂 Category Performance"
+msgstr ""
+
+#: templates/analytics.html:396
+msgid "Profit"
+msgstr ""
+
+#: templates/analytics.html:400
+msgid "Units Sold"
+msgstr ""
+
+#: templates/analytics.html:409
+msgid "No category data available."
+msgstr ""
+
+#: templates/analytics.html:417
+msgid "⚠️ Dead Stock Alert"
+msgstr ""
+
+#: templates/analytics.html:417 templates/analytics.html:434
+msgid "products"
+msgstr ""
+
+#: templates/analytics.html:418
+msgid "These products have inventory but no recent sales activity:"
+msgstr ""
+
+#: templates/analytics.html:421
+msgid "units in stock"
+msgstr ""
+
+#: templates/analytics.html:424
+msgid "...and"
+msgstr ""
+
+#: templates/analytics.html:424
+msgid "more"
+msgstr ""
+
+#: templates/analytics.html:434
+msgid "📦 Low Stock Alert"
+msgstr ""
+
+#: templates/analytics.html:440
+msgid "Current Stock"
+msgstr ""
+
+#: templates/analytics.html:441 templates/products.html:395
+#: templates/products.html:428
+msgid "Reorder Level"
+msgstr ""
+
+#: templates/pos_billing.html:6
+msgid "POS Billing System"
+msgstr ""
+
+#: templates/products.html:6 templates/products.html:272
+msgid "Product Management"
+msgstr ""
+
+#: templates/products.html:288
+msgid "POS Billing"
+msgstr ""
+
+#: templates/products.html:291
+msgid "Scan Barcode"
+msgstr ""
+
+#: templates/products.html:294
+msgid "Process Returns"
+msgstr ""
+
+#: templates/products.html:297
+msgid "Stock History"
+msgstr ""
+
+#: templates/products.html:300
+msgid "Analytics"
+msgstr ""
+
+#: templates/products.html:306 templates/products.html:326
+msgid "Search & Filter"
+msgstr ""
+
+#: templates/products.html:310
+msgid "Search by Product Name"
+msgstr ""
+
+#: templates/products.html:311
+msgid "Enter product name..."
+msgstr ""
+
+#: templates/products.html:315
+msgid "Filter by Category"
+msgstr ""
+
+#: templates/products.html:317
+msgid "-- All Categories --"
+msgstr ""
+
+#: templates/products.html:327
+msgid "Clear Filters"
+msgstr ""
+
+#: templates/products.html:334
+msgid "Add New Category"
+msgstr ""
+
+#: templates/products.html:338
+msgid "Category Name"
+msgstr ""
+
+#: templates/products.html:339
+msgid "e.g., Electronics, Furniture"
+msgstr ""
+
+#: templates/products.html:344
+msgid "Add Category"
+msgstr ""
+
+#: templates/products.html:351
+msgid "Add New Product"
+msgstr ""
+
+#: templates/products.html:365 templates/products.html:423
+#: templates/returns.html:329 templates/stock_history.html:226
+msgid "Category"
+msgstr ""
+
+#: templates/products.html:367
+msgid "-- No Category --"
+msgstr ""
+
+#: templates/products.html:375
+msgid "Buying Price"
+msgstr ""
+
+#: templates/products.html:380
+msgid "Selling Price"
+msgstr ""
+
+#: templates/products.html:385 templates/products.html:426
+#: templates/returns.html:308 templates/scan.html:261
+#: templates/stock_history.html:228
+msgid "Quantity"
+msgstr ""
+
+#: templates/products.html:390
+msgid "Shelf Number"
+msgstr ""
+
+#: templates/products.html:400
+msgid "Custom Barcode (Optional)"
+msgstr ""
+
+#: templates/products.html:401
+msgid "Leave blank to auto-generate from SKU"
+msgstr ""
+
+#: templates/products.html:406
+msgid "Add Product"
+msgstr ""
+
+#: templates/products.html:413
+msgid "Product Inventory"
+msgstr ""
+
+#: templates/products.html:413 templates/stock_history.html:198
+#: templates/stock_history.html:203 templates/stock_history.html:208
+msgid "items"
+msgstr ""
+
+#: templates/products.html:419
+msgid "ID"
+msgstr ""
+
+#: templates/products.html:421
+msgid "Name"
+msgstr ""
+
+#: templates/products.html:422
+msgid "Barcode"
+msgstr ""
+
+#: templates/products.html:427
+msgid "Shelf"
+msgstr ""
+
+#: templates/products.html:429
+msgid "Actions"
+msgstr ""
+
+#: templates/products.html:440
+msgid "View Barcode"
+msgstr ""
+
+#: templates/products.html:444
+msgid "No barcode"
+msgstr ""
+
+#: templates/products.html:457
+msgid "Edit"
+msgstr ""
+
+#: templates/products.html:458
+msgid "Buy"
+msgstr ""
+
+#: templates/products.html:459
+msgid "Sell"
+msgstr ""
+
+#: templates/products.html:460
+msgid "Return"
+msgstr ""
+
+#: templates/products.html:461
+msgid "Are you sure you want to delete this product?"
+msgstr ""
+
+#: templates/products.html:462
+msgid "Delete"
+msgstr ""
+
+#: templates/products.html:471
+msgid "No products found. Add your first product using the form above."
+msgstr ""
+
+#: templates/products.html:482
+msgid "Edit Product"
+msgstr ""
+
+#: templates/returns.html:6 templates/returns.html:236
+msgid "Returns Management"
+msgstr ""
+
+#: templates/returns.html:239
+msgid "Process Return"
+msgstr ""
+
+#: templates/returns.html:244 templates/scan.html:188
+msgid "Scan with Camera"
+msgstr ""
+
+#: templates/returns.html:247 templates/scan.html:191
+msgid "Enter Barcode Manually"
+msgstr ""
+
+#: templates/returns.html:254 templates/scan.html:198
+msgid "Start Camera"
+msgstr ""
+
+#: templates/returns.html:255 templates/scan.html:199
+msgid "Stop Camera"
+msgstr ""
+
+#: templates/returns.html:267 templates/scan.html:212
+msgid "Enter Barcode Number"
+msgstr ""
+
+#: templates/returns.html:268 templates/scan.html:213
+msgid "Scan or type barcode..."
+msgstr ""
+
+#: templates/returns.html:270 templates/scan.html:215
+msgid "Search Product"
+msgstr ""
+
+#: templates/returns.html:278 templates/scan.html:223
+msgid "Product Found"
+msgstr ""
+
+#: templates/returns.html:278
+msgid "Enter Return Quantity"
+msgstr ""
+
+#: templates/returns.html:280 templates/scan.html:225
+msgid "Product Name:"
+msgstr ""
+
+#: templates/returns.html:284 templates/scan.html:229
+msgid "SKU:"
+msgstr ""
+
+#: templates/returns.html:288 templates/scan.html:233
+msgid "Category:"
+msgstr ""
+
+#: templates/returns.html:294
+msgid "Return Quantity"
+msgstr ""
+
+#: templates/returns.html:297
+msgid "Confirm Return"
+msgstr ""
+
+#: templates/returns.html:302 templates/scan.html:255
+msgid "Stock Action"
+msgstr ""
+
+#: templates/returns.html:312 templates/scan.html:265
+msgid "SELL PRODUCT"
+msgstr ""
+
+#: templates/returns.html:313 templates/scan.html:266
+msgid "BUY PRODUCT"
+msgstr ""
+
+#: templates/returns.html:320
+msgid "Recent Returns"
+msgstr ""
+
+#: templates/returns.html:320
+msgid "Last 50"
+msgstr ""
+
+#: templates/returns.html:326
+msgid "Date & Time"
+msgstr ""
+
+#: templates/returns.html:330
+msgid "Quantity Returned"
+msgstr ""
+
+#: templates/returns.html:347
+msgid "No returns yet. Scan a product barcode to process a return."
+msgstr ""
+
+#: templates/scan.html:6 templates/scan.html:182
+msgid "Barcode Scanner"
+msgstr ""
+
+#: templates/scan.html:237
+msgid "Price:"
+msgstr ""
+
+#: templates/scan.html:241
+msgid "Quantity:"
+msgstr ""
+
+#: templates/scan.html:245
+msgid "Shelf Number:"
+msgstr ""
+
+#: templates/scan.html:249
+msgid "Reorder Level:"
+msgstr ""
+
+#: templates/stock_history.html:6 templates/stock_history.html:181
+msgid "Stock Movement History"
+msgstr ""
+
+#: templates/stock_history.html:182
+msgid "Complete audit trail of all inventory operations"
+msgstr ""
+
+#: templates/stock_history.html:197
+msgid "Buy Operations"
+msgstr ""
+
+#: templates/stock_history.html:202
+msgid "Sell Operations"
+msgstr ""
+
+#: templates/stock_history.html:207
+msgid "Return Operations"
+msgstr ""
+
+#: templates/stock_history.html:212
+msgid "Total Operations"
+msgstr ""
+
+#: templates/stock_history.html:213
+msgid "All time"
+msgstr ""
+
+#: templates/stock_history.html:224
+msgid "Product SKU"
+msgstr ""
+
+#: templates/stock_history.html:227
+msgid "Operation"
+msgstr ""
+
+#: templates/stock_history.html:229
+msgid "Timestamp"
+msgstr ""
+
+#: templates/stock_history.html:241
+msgid "Uncategorized"
+msgstr ""
+
+#: templates/stock_history.html:267
+msgid "No stock movements recorded yet"
+msgstr ""
+
+#: templates/stock_history.html:268
+msgid "Start by adding products and performing buy/sell/return operations"
+msgstr ""
+
