@@ -6,7 +6,7 @@
     <title>{{ _('POS Billing System') }}</title>
     <!-- Barcode Detection Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.10.2/dist/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.20.0/umd/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1023,8 +1023,8 @@
         });
         
         // Camera-based barcode scanner
-        let cameraStream = null;
-        let quaggaRunning = false;
+        const codeReader = new ZXing.BrowserMultiFormatReader();
+        let isScanning = false;
         const scannedBarcodes = new Set();
         let lastDetectionTime = 0;
         
@@ -1044,155 +1044,58 @@
             barcodeStatus.textContent = '📍 Initializing camera...';
             
             try {
-                // Check if getUserMedia is supported
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    throw new Error('Camera access not supported in this browser');
+                // Get available video devices
+                const videoInputDevices = await codeReader.getVideoInputDevices();
+                if (videoInputDevices.length === 0) {
+                    throw new Error('No video devices found.');
                 }
                 
-                // Request camera access first to ensure permissions are granted
-                cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
+                // Prefer rear camera
+                let selectedDeviceId = videoInputDevices[0].deviceId;
+                for (const device of videoInputDevices) {
+                    if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear') || device.label.toLowerCase().includes('environment')) {
+                        selectedDeviceId = device.deviceId;
+                        break;
+                    }
+                }
+                
+                isScanning = true;
+                
+                // Start scanning
+                codeReader.decodeFromVideoDevice(selectedDeviceId, cameraVideo, (result, err) => {
+                    if (result && isScanning) {
+                        const barcode = result.text;
+                        const now = Date.now();
+                        
+                        // Require debounce (wait at least 1.2s before accepting same barcode)
+                        if ((now - lastDetectionTime) > 1200 && !scannedBarcodes.has(barcode)) {
+                            lastDetectionTime = now;
+                            scannedBarcodes.add(barcode);
+                            
+                            detectedValue.textContent = barcode;
+                            detectedBarcode.style.display = 'block';
+                            barcodeStatus.textContent = '✅ Barcode detected!';
+                            
+                            console.log('Processing barcode:', barcode);
+                            
+                            // Auto-search product with a slight delay
+                            setTimeout(() => {
+                                searchAndAddProduct(barcode);
+                            }, 300);
+                        }
+                    }
+                    
+                    if (err && !(err instanceof ZXing.NotFoundException)) {
+                        console.log('Scanning error:', err);
+                    }
                 });
                 
-                // Set the video stream to the video element
-                cameraVideo.srcObject = cameraStream;
-                
-                // Wait a moment for the video to play, then initialize Quagga
-                setTimeout(() => {
-                    if (cameraVideo.readyState === cameraVideo.HAVE_FUTURE_FRAME || 
-                        cameraVideo.readyState === cameraVideo.HAVE_ENOUGH_DATA) {
-                        initializeQuagga();
-                    } else {
-                        // If video isn't ready yet, wait for it
-                        cameraVideo.oncanplay = () => {
-                            initializeQuagga();
-                            cameraVideo.oncanplay = null;
-                        };
-                    }
-                }, 100);
-                
+                barcodeStatus.textContent = '📍 Scanning... Point camera at barcode';
             } catch (err) {
                 console.error('Camera access error:', err);
-                barcodeStatus.textContent = '❌ Camera Error';
-                
-                if (err.name === 'NotAllowedError') {
-                    showAlert('Camera permission denied. Please enable camera access in browser settings.', 'error');
-                } else if (err.name === 'NotFoundError') {
-                    showAlert('No camera found on this device.', 'error');
-                } else {
-                    showAlert('Cannot access camera. Error: ' + err.message, 'error');
-                }
-                setTimeout(closeCamera, 2000);
-            }
-        }
-        
-        function initializeQuagga() {
-            if (quaggaRunning) return;
-            
-            quaggaRunning = true;
-            scannedBarcodes.clear();
-            barcodeStatus.textContent = '📍 Scanning...';
-            detectedBarcode.style.display = 'none';
-            
-            // Configuration for Quagga with the video element
-            const config = {
-                inputStream: {
-                    name: 'Live',
-                    type: 'LiveStream',
-                    target: document.querySelector('#cameraVideo'),
-                    constraints: {
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                        facingMode: 'environment'
-                    }
-                },
-                decoder: {
-                    readers: [
-                        'ean_reader',
-                        'ean_8_reader', 
-                        'code_128_reader',
-                        'code_39_reader',
-                        'upc_reader',
-                        'upc_e_reader',
-                        'codabar_reader'
-                    ],
-                    debug: {
-                        showCanvas: false,
-                        showPatterns: false,
-                        showFrequency: false,
-                        showSkeleton: false
-                    }
-                },
-                locate: true,
-                area: {
-                    top: '20%',
-                    left: '10%',
-                    right: '10%',
-                    bottom: '20%'
-                },
-                numOfWorkers: navigator.hardwareConcurrency ? Math.max(2, navigator.hardwareConcurrency - 1) : 2
-            };
-            
-            Quagga.init(config, (err) => {
-                if (err) {
-                    console.error('Quagga initialization error:', err);
-                    barcodeStatus.textContent = '❌ Failed to initialize scanner';
-                    console.log('Quagga error details:', err.message);
-                    setTimeout(() => closeCamera(), 2000);
-                    return;
-                }
-                
-                console.log('Quagga initialized successfully');
-                
-                Quagga.start();
-                barcodeStatus.textContent = '📍 Scanning... Point camera at barcode';
-                
-                // Listen for detections
-                Quagga.onDetected(onBarcodeDetected);
-                Quagga.onProcessed(onProcessFrame);
-            });
-        }
-        
-        function onBarcodeDetected(result) {
-            if (!quaggaRunning) return;
-            
-            try {
-                const code = result.codeResult.code;
-                const confidence = result.codeResult.confidence;
-                
-                console.log('Barcode detected:', code, 'Confidence:', confidence);
-                
-                // Require reasonable confidence and debounce (0.6 is a good threshold)
-                const now = Date.now();
-                if (confidence > 0.6 && (now - lastDetectionTime) > 1200 && !scannedBarcodes.has(code)) {
-                    lastDetectionTime = now;
-                    scannedBarcodes.add(code);
-                    
-                    detectedValue.textContent = code + ' (Confidence: ' + (confidence * 100).toFixed(1) + '%)';
-                    detectedBarcode.style.display = 'block';
-                    barcodeStatus.textContent = '✅ Barcode detected!';
-                    
-                    console.log('Processing barcode:', code);
-                    
-                    // Auto-search product with a slight delay
-                    setTimeout(() => {
-                        searchAndAddProduct(code);
-                    }, 300);
-                }
-            } catch (err) {
-                console.error('Error in onBarcodeDetected:', err);
-            }
-        }
-        
-        function onProcessFrame(result) {
-            // Visual feedback during scanning
-            if (result && result.boxes && result.boxes.length > 0) {
-                barcodeStatus.textContent = '🎯 Locked on barcode...';
+                barcodeStatus.textContent = '❌ Camera Error: ' + err.message;
+                showAlert('Cannot access camera. ' + err.message, 'error');
+                setTimeout(closeCamera, 3000);
             }
         }
         
@@ -1245,34 +1148,12 @@
         function closeCamera() {
             console.log('Closing camera...');
             cameraModal.classList.remove('show');
+            isScanning = false;
             
-            // Stop Quagga first
-            if (quaggaRunning) {
-                try {
-                    Quagga.stop();
-                    Quagga.offDetected();
-                    Quagga.offProcessed();
-                } catch (e) {
-                    console.error('Error stopping Quagga:', e);
-                }
-                quaggaRunning = false;
-            }
-            
-            // Stop camera stream tracks
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => {
-                    try {
-                        track.stop();
-                    } catch (e) {
-                        console.error('Error stopping track:', e);
-                    }
-                });
-                cameraStream = null;
-            }
-            
-            // Clear video source
-            if (cameraVideo) {
-                cameraVideo.srcObject = null;
+            try {
+                codeReader.reset();
+            } catch (e) {
+                console.error('Error stopping ZXing:', e);
             }
             
             // Return focus to searchInput

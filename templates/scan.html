@@ -292,8 +292,23 @@
                 stopBtn.style.display = 'inline-block';
                 video.style.display = 'block';
                 
+                // Get available video devices
+                const videoInputDevices = await codeReader.getVideoInputDevices();
+                if (videoInputDevices.length === 0) {
+                    throw new Error('No video devices found.');
+                }
+                
+                // Prefer rear camera
+                let selectedDeviceId = videoInputDevices[0].deviceId;
+                for (const device of videoInputDevices) {
+                    if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
+                        selectedDeviceId = device.deviceId;
+                        break;
+                    }
+                }
+                
                 // Start scanning
-                await codeReader.decodeFromVideoDevice(null, video, (result, err) => {
+                codeReader.decodeFromVideoDevice(selectedDeviceId, video, (result, err) => {
                     if (result && isScanning) {
                         const barcode = result.text;
                         
