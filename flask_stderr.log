@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "D:\College\Sem 4\Mini project\project 2.0\app.py", line 2, in <module>
+    from flask_babel import Babel, _
+ModuleNotFoundError: No module named 'flask_babel'
